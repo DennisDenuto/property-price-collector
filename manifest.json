@@ -1,0 +1,19 @@
+{
+    "dependencies": {
+        "github.com/PuerkitoBio/fetchbot": {
+            "branch": "master"
+        },
+        "github.com/PuerkitoBio/goquery": {
+            "branch": "master"
+        },
+        "github.com/golang/protobuf": {
+            "branch": "master"
+        },
+        "github.com/onsi/ginkgo": {
+            "branch": "master"
+        },
+        "github.com/onsi/gomega": {
+            "branch": "master"
+        }
+    }
+}

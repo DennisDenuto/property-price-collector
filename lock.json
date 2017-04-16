@@ -1,0 +1,115 @@
+{
+    "memo": "53176b2e2e36d9b38f86617271392b4149bd85acc8bfc4ce24dce296a76848b8",
+    "projects": [
+        {
+            "name": "github.com/PuerkitoBio/fetchbot",
+            "branch": "master",
+            "revision": "fa68f87b3accbd050467f744722059235362fe0f",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/PuerkitoBio/goquery",
+            "branch": "master",
+            "revision": "ed7d758e9a34ba1f55e8084e0d731448b46921a8",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/andybalholm/cascadia",
+            "branch": "master",
+            "revision": "349dd0209470eabd9514242c688c403c0926d266",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/golang/protobuf",
+            "branch": "master",
+            "revision": "2bba0603135d7d7f5cb73b2125beeda19c09f4ef",
+            "packages": [
+                "proto"
+            ]
+        },
+        {
+            "name": "github.com/onsi/ginkgo",
+            "branch": "master",
+            "revision": "f40a49d81e5c12e90400620b6242fb29a8e7c9d9",
+            "packages": [
+                ".",
+                "config",
+                "internal/codelocation",
+                "internal/containernode",
+                "internal/failer",
+                "internal/leafnodes",
+                "internal/remote",
+                "internal/spec",
+                "internal/spec_iterator",
+                "internal/specrunner",
+                "internal/suite",
+                "internal/testingtproxy",
+                "internal/writer",
+                "reporters",
+                "reporters/stenographer",
+                "reporters/stenographer/support/go-colorable",
+                "reporters/stenographer/support/go-isatty",
+                "types"
+            ]
+        },
+        {
+            "name": "github.com/onsi/gomega",
+            "branch": "master",
+            "revision": "9b8c753e8dfb382618ba8fa19b4197b5dcb0434c",
+            "packages": [
+                ".",
+                "format",
+                "ghttp",
+                "internal/assertion",
+                "internal/asyncassertion",
+                "internal/oraclematcher",
+                "internal/testingtsupport",
+                "matchers",
+                "matchers/support/goraph/bipartitegraph",
+                "matchers/support/goraph/edge",
+                "matchers/support/goraph/node",
+                "matchers/support/goraph/util",
+                "types"
+            ]
+        },
+        {
+            "name": "github.com/temoto/robotstxt-go",
+            "branch": "master",
+            "revision": "5f8637625d1077e19c85b5ae96c2f0f5bb476177",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "golang.org/x/net",
+            "branch": "master",
+            "revision": "5602c733f70afc6dcec6766be0d5034d4c4f14de",
+            "packages": [
+                "html",
+                "html/atom"
+            ]
+        },
+        {
+            "name": "golang.org/x/sys",
+            "branch": "master",
+            "revision": "f3918c30c5c2cb527c0b071a27c35120a6c0719a",
+            "packages": [
+                "unix"
+            ]
+        },
+        {
+            "name": "gopkg.in/yaml.v2",
+            "branch": "v2",
+            "revision": "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b",
+            "packages": [
+                "."
+            ]
+        }
+    ]
+}
