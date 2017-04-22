@@ -1,10 +1,16 @@
 package data
 
+type LonLat struct {
+	Lon string
+	Lat string
+}
+
 type Address struct {
-	AddressLine1, AddressLine2 string
-	PostCode                   string
-	Suburb                     string
-	State                      string
+	AddressLine1 string
+	PostCode     string
+	Suburb       string
+	State        string
+	LonLat       LonLat
 }
 
 type Image []byte
@@ -16,4 +22,7 @@ type Property struct {
 	Images      []Image
 	Auction     bool
 	Type        string
+	NumBeds     string
+	NumBaths    string
+	NumCars     string
 }

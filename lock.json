@@ -1,5 +1,5 @@
 {
-    "memo": "53176b2e2e36d9b38f86617271392b4149bd85acc8bfc4ce24dce296a76848b8",
+    "memo": "8249f46c1a744700258aee7a3c2d9a95364e8a970be84fa05d02f8d4ba269029",
     "projects": [
         {
             "name": "github.com/PuerkitoBio/fetchbot",
@@ -79,6 +79,28 @@
             ]
         },
         {
+            "name": "github.com/pkg/errors",
+            "branch": "master",
+            "revision": "ff09b135c25aae272398c51a07235b90a75aa4f0",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/robertkrimen/otto",
+            "branch": "master",
+            "revision": "1861f2408b93febb6dca3e39483fa6fe63d6e70f",
+            "packages": [
+                ".",
+                "ast",
+                "dbg",
+                "file",
+                "parser",
+                "registry",
+                "token"
+            ]
+        },
+        {
             "name": "github.com/temoto/robotstxt-go",
             "branch": "master",
             "revision": "5f8637625d1077e19c85b5ae96c2f0f5bb476177",
@@ -101,6 +123,15 @@
             "revision": "f3918c30c5c2cb527c0b071a27c35120a6c0719a",
             "packages": [
                 "unix"
+            ]
+        },
+        {
+            "name": "gopkg.in/sourcemap.v1",
+            "version": "v1.0.5",
+            "revision": "6e83acea0053641eff084973fee085f0c193c61a",
+            "packages": [
+                ".",
+                "base64vlq"
             ]
         },
         {
