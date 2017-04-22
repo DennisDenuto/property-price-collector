@@ -12,13 +12,15 @@ import (
 	"time"
 )
 
-var _ = Describe("Downloader", func() {
+var _ = Describe("SingleDownload", func() {
 
 	var server *ghttp.Server
 	var responseBody *string
 	var httpStatus *int
-
+	var singleDownloader Downloader
 	BeforeEach(func() {
+		singleDownloader = SingleDownload{}
+
 		tmpBody := ""
 		tmpStatus := 200
 		responseBody = &tmpBody
@@ -39,7 +41,7 @@ var _ = Describe("Downloader", func() {
 		})
 
 		It("should download", func() {
-			content, err := Download(server.URL(), context.TODO())
+			content, err := singleDownloader.Download(server.URL(), context.TODO())
 			Expect(err).ToNot(HaveOccurred())
 
 			all, err := ioutil.ReadAll(content)
@@ -58,13 +60,13 @@ var _ = Describe("Downloader", func() {
 			context, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 			defer cancel()
 
-			_, err := Download(server.URL(), context)
+			_, err := singleDownloader.Download(server.URL(), context)
 			Expect(err).To(HaveOccurred())
 		})
 	})
 	Context("given an invalid url that takes a long time", func() {
 		It("should return an error", func() {
-			_, err := Download(":", context.TODO())
+			_, err := singleDownloader.Download(":", context.TODO())
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("Unable to build http request"))
 		})

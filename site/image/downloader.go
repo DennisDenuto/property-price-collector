@@ -9,7 +9,7 @@ import (
 	"bytes"
 )
 
-type Downlaoder interface {
+type Downloader interface {
 	Download(url string, ctx context.Context) (io.Reader, error)
 }
 
@@ -19,7 +19,9 @@ func (df DownloadFunc) Download(url string, ctx context.Context) (io.Reader, err
 	return df(url, ctx)
 }
 
-func Download(url string, ctx context.Context) (io.Reader, error) {
+type SingleDownload struct{}
+
+func (SingleDownload) Download(url string, ctx context.Context) (io.Reader, error) {
 	request, err := http.NewRequest("", url, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to build http request when downloading")
