@@ -1,16 +1,19 @@
-package adapters
+package image
 
 import (
-	"github.com/DennisDenuto/property-price-collector/site/image"
 	"io"
 	"context"
 	"compress/gzip"
 	"bytes"
+	"github.com/pkg/errors"
 )
 
-func Compress(downloader image.Downloader) image.Downloader {
-	return image.DownloadFunc(func(url string, ctx context.Context) (io.Reader, error) {
+func TryCompress(downloader Downloader) Downloader {
+	return DownloadFunc(func(url string, ctx context.Context) (io.Reader, error) {
 		downloadReader, downloadErr := downloader.Download(url, ctx)
+		if downloadErr != nil {
+			return nil, downloadErr
+		}
 
 		var buffer bytes.Buffer
 		compressWriter := gzip.NewWriter(&buffer)
@@ -18,7 +21,7 @@ func Compress(downloader image.Downloader) image.Downloader {
 
 		_, err := io.Copy(compressWriter, downloadReader)
 		if err != nil {
-			panic(err)
+			return downloadReader, errors.Wrap(downloadErr, err.Error())
 		}
 
 		return &buffer, downloadErr

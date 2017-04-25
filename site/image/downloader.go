@@ -21,6 +21,9 @@ func (df DownloadFunc) Download(url string, ctx context.Context) (io.Reader, err
 
 type SingleDownload struct{}
 
+func NewSingleDownloader() Downloader {
+	return SingleDownload{}
+}
 func (SingleDownload) Download(url string, ctx context.Context) (io.Reader, error) {
 	request, err := http.NewRequest("", url, nil)
 	if err != nil {

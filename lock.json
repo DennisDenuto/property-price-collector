@@ -1,5 +1,5 @@
 {
-    "memo": "8249f46c1a744700258aee7a3c2d9a95364e8a970be84fa05d02f8d4ba269029",
+    "memo": "83b84681cd11510278c61a451c89105a1c6e61fb16fad5ee0edc7a879f213daf",
     "projects": [
         {
             "name": "github.com/PuerkitoBio/fetchbot",
@@ -13,6 +13,14 @@
             "name": "github.com/PuerkitoBio/goquery",
             "branch": "master",
             "revision": "ed7d758e9a34ba1f55e8084e0d731448b46921a8",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/Sirupsen/logrus",
+            "branch": "master",
+            "revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
             "packages": [
                 "."
             ]
@@ -36,7 +44,7 @@
         {
             "name": "github.com/onsi/ginkgo",
             "branch": "master",
-            "revision": "f40a49d81e5c12e90400620b6242fb29a8e7c9d9",
+            "revision": "6adbc2648389a46e8ff0e96d07a07a9a9eb432de",
             "packages": [
                 ".",
                 "config",
@@ -89,7 +97,7 @@
         {
             "name": "github.com/robertkrimen/otto",
             "branch": "master",
-            "revision": "1861f2408b93febb6dca3e39483fa6fe63d6e70f",
+            "revision": "21ec96599b1279b5673e4df0097dd56bb8360068",
             "packages": [
                 ".",
                 "ast",
@@ -111,7 +119,7 @@
         {
             "name": "golang.org/x/net",
             "branch": "master",
-            "revision": "5602c733f70afc6dcec6766be0d5034d4c4f14de",
+            "revision": "da118f7b8e5954f39d0d2130ab35d4bf0e3cb344",
             "packages": [
                 "html",
                 "html/atom"
@@ -120,7 +128,7 @@
         {
             "name": "golang.org/x/sys",
             "branch": "master",
-            "revision": "f3918c30c5c2cb527c0b071a27c35120a6c0719a",
+            "revision": "8c0a5eacbac818f9011015b17992f53d9cec3e8f",
             "packages": [
                 "unix"
             ]

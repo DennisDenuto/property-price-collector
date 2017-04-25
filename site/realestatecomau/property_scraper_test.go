@@ -90,7 +90,7 @@ Disallow: /deny`,
 
 			Expect(receivedProperty.Type).To(Equal("house"))
 			Expect(receivedProperty.Price).To(Equal("Price guide $700,000 - $760,000"))
-			//Expect(receivedProperty.Images).To(HaveLen(7))
+			Expect(receivedProperty.Images).To(HaveLen(2))
 		})
 	})
 

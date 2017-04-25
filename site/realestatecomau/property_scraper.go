@@ -9,6 +9,11 @@ import (
 	"github.com/robertkrimen/otto"
 	"strings"
 	"strconv"
+	"github.com/DennisDenuto/property-price-collector/site/image"
+	"context"
+	"io"
+	"io/ioutil"
+	"github.com/Sirupsen/logrus"
 )
 
 //https://www.realestate.com.au/auction-results/nsw.html?rsf=edm:auction:nsw
@@ -40,7 +45,7 @@ func (r RealEstateComAu) GetProperties() <-chan data.Property {
 }
 
 func propertyList(propertyChannel chan<- data.Property) fetchbot.Handler {
-	return fetchbot.HandlerFunc(func(context *fetchbot.Context, response *http.Response, err error) {
+	return fetchbot.HandlerFunc(func(fetchbotCtx *fetchbot.Context, response *http.Response, err error) {
 		doc, err := goquery.NewDocumentFromResponse(response)
 		if err != nil {
 			panic(err)
@@ -59,7 +64,7 @@ func propertyList(propertyChannel chan<- data.Property) fetchbot.Handler {
 		exportedListingArray, err := lmiListings.Export()
 		listingsArrays := exportedListingArray.([]map[string]interface{})
 		for _, val := range listingsArrays {
-			id := getString(val["id"])
+			id := toString(val["id"])
 			propertyPrice := doc.Find(fmt.Sprintf("#t%s .priceText", id))
 			propertyFeatures := doc.Find(fmt.Sprintf("#t%s .rui-property-features dd", id))
 
@@ -67,27 +72,48 @@ func propertyList(propertyChannel chan<- data.Property) fetchbot.Handler {
 			numBaths := getPropertyFeature(propertyFeatures, 1)
 			numCars := getPropertyFeature(propertyFeatures, 2)
 
-
 			property := data.Property{
-				Type:     getPropertyType(getString(val["prettyDetailsUrl"])),
+				Images:   getPropertyPhotos(val),
+				Type:     getPropertyType(toString(val["prettyDetailsUrl"])),
 				Price:    propertyPrice.Text(),
 				NumBeds:  numBeds,
 				NumBaths: numBaths,
 				NumCars:  numCars,
 				Address: data.Address{
-					AddressLine1: getString(val["streetAddress"]),
-					State:        getString(val["state"]),
-					PostCode:     getString(val["postalCode"]),
-					Suburb:       getString(val["city"]),
+					AddressLine1: toString(val["streetAddress"]),
+					State:        toString(val["state"]),
+					PostCode:     toString(val["postalCode"]),
+					Suburb:       toString(val["city"]),
 					LonLat: data.LonLat{
-						Lat: getString(val["latitude"]),
-						Lon: getString(val["longitude"]),
+						Lat: toString(val["latitude"]),
+						Lon: toString(val["longitude"]),
 					},
 				},
 			}
 			propertyChannel <- property
 		}
 	})
+}
+func getPropertyPhotos(val map[string]interface{}) []data.Image {
+	var imageReaders []io.Reader
+	if photos, ok := val["photos"].([]map[string]interface{}); ok {
+		var urls []string
+		for _, photo := range photos {
+			urls = append(urls, "https://i1.au.reastatic.net/640x480"+photo["src"].(string))
+		}
+
+		imageReaders, _ = image.MultiDownload(urls, context.Background())
+	}
+	var propertyImages []data.Image
+	for _, imageReader := range imageReaders {
+		all, err := ioutil.ReadAll(imageReader)
+		if err != nil {
+			logrus.WithError(err).Error("Unable to read downloaded property image.")
+			continue
+		}
+		propertyImages = append(propertyImages, all)
+	}
+	return propertyImages
 }
 
 func getPropertyType(prettyDetailsUrl string) string {
@@ -111,7 +137,7 @@ func getPropertyFeature(propertyFeatures *goquery.Selection, idx int) (propertyF
 	return propertyFeatures.Nodes[idx].FirstChild.Data
 }
 
-func getString(obj interface{}) string {
+func toString(obj interface{}) string {
 	switch objVal := obj.(type) {
 	case string:
 		return objVal
