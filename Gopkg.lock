@@ -1,0 +1,91 @@
+memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/PuerkitoBio/fetchbot"
+  packages = ["."]
+  revision = "fa68f87b3accbd050467f744722059235362fe0f"
+
+[[projects]]
+  name = "github.com/PuerkitoBio/goquery"
+  packages = ["."]
+  revision = "e1271ee34c6a305e38566ecd27ae374944907ee9"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  revision = "202f25545ea4cf9b191ff7f846df5d87c9382c2b"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/andybalholm/cascadia"
+  packages = ["."]
+  revision = "349dd0209470eabd9514242c688c403c0926d266"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "e325f446bebc2998605911c0a2650d9920361d4a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/onsi/ginkgo"
+  packages = [".","config","internal/codelocation","internal/containernode","internal/failer","internal/leafnodes","internal/remote","internal/spec","internal/spec_iterator","internal/specrunner","internal/suite","internal/testingtproxy","internal/writer","reporters","reporters/stenographer","reporters/stenographer/support/go-colorable","reporters/stenographer/support/go-isatty","types"]
+  revision = "a1f616c97771e46da1722d3aa9dcde0a43f55682"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/onsi/gomega"
+  packages = [".","format","ghttp","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
+  revision = "39a54bd3c3bbfe1c331a9b3207e92134c77ed812"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/robertkrimen/otto"
+  packages = [".","ast","dbg","file","parser","registry","token"]
+  revision = "49fee9c1c0db1c366003ede4cc665f9924a97521"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/temoto/robotstxt-go"
+  packages = ["."]
+  revision = "9e4646fa705336d5b2fa9dddfafbe0a1a965acd7"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["html","html/atom","html/charset"]
+  revision = "dfe83d419c9403b40b19d08cdba2afec27b002f7"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "0b25a408a50076fbbcae6b7ac0ea5fbb0b085e79"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/text"
+  packages = ["encoding","encoding/charmap","encoding/htmlindex","encoding/internal","encoding/internal/identifier","encoding/japanese","encoding/korean","encoding/simplifiedchinese","encoding/traditionalchinese","encoding/unicode","internal/gen","internal/tag","internal/utf8internal","language","runes","transform","unicode/cldr"]
+  revision = "3491b61b9edc56653ad4333e605e2908e46a036b"
+
+[[projects]]
+  name = "gopkg.in/sourcemap.v1"
+  packages = [".","base64vlq"]
+  revision = "6e83acea0053641eff084973fee085f0c193c61a"
+  version = "v1.0.5"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b"

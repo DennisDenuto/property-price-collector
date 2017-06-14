@@ -1,0 +1,1 @@
+curl 'https://www.purplebricks.com.au/api/propertysearch?location=Sydney%2C%20NSW%202000&locationCleared=false&latitude=-33.86885127&longitude=151.20933225&searchRadius=30&type=&priceFrom=&priceTo=&bedroomsFrom=&bedroomsTo=&pageNumber=1&propertyId=&soldOrLet=false&pageSize=10&pages=&sortBy=1&sortByChange=&sortByChangeNewVal=&searchPopulatedByUrl=&toLet=false'

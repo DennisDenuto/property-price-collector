@@ -72,6 +72,9 @@ func propertyList(propertyChannel chan<- data.Property) fetchbot.Handler {
 			numBaths := getPropertyFeature(propertyFeatures, 1)
 			numCars := getPropertyFeature(propertyFeatures, 2)
 
+
+
+			//TODO find out the size of the property
 			property := data.Property{
 				Images:   getPropertyPhotos(val),
 				Type:     getPropertyType(toString(val["prettyDetailsUrl"])),

@@ -5,7 +5,12 @@ import (
 	"github.com/PuerkitoBio/fetchbot"
 )
 
-type PropertyScraper interface {
+type ListedPropertyScraper interface {
 	SetupMux(*fetchbot.Mux)
 	GetProperties() <-chan data.Property
+}
+
+type HistoricalPropertyScraper interface {
+	SetupMux(*fetchbot.Mux)
+	GetProperties() <-chan data.PropertyHistoryData
 }

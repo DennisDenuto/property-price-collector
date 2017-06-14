@@ -1,29 +1,28 @@
 package main
 
 import (
+	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
+	"fmt"
 	"github.com/PuerkitoBio/fetchbot"
-	"github.com/PuerkitoBio/goquery"
-	"net/http"
 )
 
 func main() {
-	f := fetchbot.New(fetchbot.HandlerFunc(func(context *fetchbot.Context, resp *http.Response, err error) {
-		doc, err := goquery.NewDocument(context.Cmd.URL().String())
-		if err != nil {
-			panic(err)
-		}
-		doc.Find("a").Each(func(idx int, selection *goquery.Selection) {
-			html, _ := selection.Html()
-			println(html)
-		})
-	}))
 
-	f.AutoClose = true
-	queue := f.Start()
+	mux := fetchbot.NewMux()
 
-	_, err := queue.SendStringGet("http://www.google.com")
-	if err != nil {
-		panic(err)
+	f := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", 2155, 2155)
+	f.SetupMux(mux)
+
+	fetcher := fetchbot.New(mux)
+
+	queue := fetcher.Start()
+
+	for _, seed := range f.SeedUrls {
+		queue.SendStringGet(seed)
+	}
+
+	for value := range f.GetProperties() {
+		println(fmt.Sprintf("%+v", value))
 	}
 
 	queue.Block()
