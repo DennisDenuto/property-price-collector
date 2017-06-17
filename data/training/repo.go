@@ -1,17 +1,17 @@
 package training
 
 import (
-	"github.com/pachyderm/pachyderm/src/client"
 	_ "github.com/gogo/protobuf/gogoproto"
+	"github.com/pachyderm/pachyderm/src/client"
 
-	"github.com/pachyderm/pachyderm/src/client/pfs"
-	"io"
-	"github.com/pkg/errors"
-	"path/filepath"
-	"github.com/DennisDenuto/property-price-collector/data"
-	"strings"
-	"encoding/json"
 	"bytes"
+	"encoding/json"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/pachyderm/pachyderm/src/client/pfs"
+	"github.com/pkg/errors"
+	"io"
+	"path/filepath"
+	"strings"
 )
 
 const training_data_repo_name = "training-data-properties"

@@ -3,10 +3,10 @@ package image_test
 import (
 	. "github.com/DennisDenuto/property-price-collector/site/image"
 
+	"context"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
-	"context"
 	"io/ioutil"
 	"net/http"
 	"time"

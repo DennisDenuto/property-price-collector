@@ -1,14 +1,14 @@
 package image_test
 
 import (
+	"compress/gzip"
+	"context"
+	"github.com/DennisDenuto/property-price-collector/site/image"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
-	"github.com/DennisDenuto/property-price-collector/site/image"
-	"context"
 	"io"
 	"io/ioutil"
-	"compress/gzip"
 )
 
 var _ = Describe("MultiDownloader", func() {

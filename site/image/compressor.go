@@ -1,11 +1,11 @@
 package image
 
 import (
-	"io"
-	"context"
-	"compress/gzip"
 	"bytes"
+	"compress/gzip"
+	"context"
 	"github.com/pkg/errors"
+	"io"
 )
 
 func TryCompress(downloader Downloader) Downloader {

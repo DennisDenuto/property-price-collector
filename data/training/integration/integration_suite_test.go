@@ -4,15 +4,15 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"testing"
-	"github.com/onsi/gomega/gexec"
-	"os/exec"
-	"github.com/onsi/gomega/gbytes"
-	"time"
-	"strings"
 	"context"
-	"io"
 	"fmt"
+	"github.com/onsi/gomega/gbytes"
+	"github.com/onsi/gomega/gexec"
+	"io"
+	"os/exec"
+	"strings"
+	"testing"
+	"time"
 )
 
 func TestStore(t *testing.T) {
@@ -77,7 +77,7 @@ func ListRepos() []string {
 	sess, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Expect(err).ToNot(HaveOccurred())
 
-	return strings.Split(string(sess.Wait(2 * time.Second).Out.Contents()), "\n")
+	return strings.Split(string(sess.Wait(2*time.Second).Out.Contents()), "\n")
 }
 
 func ListCommits(repoName string) []string {
@@ -85,7 +85,7 @@ func ListCommits(repoName string) []string {
 	sess, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Expect(err).ToNot(HaveOccurred())
 
-	return strings.Split(string(sess.Wait(2 * time.Second).Out.Contents()), "\n")
+	return strings.Split(string(sess.Wait(2*time.Second).Out.Contents()), "\n")
 }
 
 func GetFile(repoName, commitId, path string) string {

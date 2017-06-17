@@ -1,19 +1,19 @@
 package realestatecomau
 
 import (
-	"github.com/DennisDenuto/property-price-collector/data"
-	"github.com/PuerkitoBio/fetchbot"
-	"net/http"
-	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/robertkrimen/otto"
-	"strings"
-	"strconv"
-	"github.com/DennisDenuto/property-price-collector/site/image"
 	"context"
+	"fmt"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/site/image"
+	"github.com/PuerkitoBio/fetchbot"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/Sirupsen/logrus"
+	"github.com/robertkrimen/otto"
 	"io"
 	"io/ioutil"
-	"github.com/Sirupsen/logrus"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 //https://www.realestate.com.au/auction-results/nsw.html?rsf=edm:auction:nsw
@@ -71,8 +71,6 @@ func propertyList(propertyChannel chan<- data.Property) fetchbot.Handler {
 			numBeds := getPropertyFeature(propertyFeatures, 0)
 			numBaths := getPropertyFeature(propertyFeatures, 1)
 			numCars := getPropertyFeature(propertyFeatures, 2)
-
-
 
 			//TODO find out the size of the property
 			property := data.Property{

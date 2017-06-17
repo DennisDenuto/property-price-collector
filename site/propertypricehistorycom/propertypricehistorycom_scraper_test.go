@@ -3,13 +3,13 @@ package propertypricehistorycom_test
 import (
 	. "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 
+	"fmt"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/PuerkitoBio/fetchbot"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/PuerkitoBio/fetchbot"
 	"github.com/onsi/gomega/ghttp"
-	"fmt"
 	"net/url"
-	"github.com/DennisDenuto/property-price-collector/data"
 	"time"
 )
 

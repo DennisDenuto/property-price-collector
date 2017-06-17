@@ -4,8 +4,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"testing"
 	"io/ioutil"
+	"testing"
 )
 
 var PropertyPriceHistory_list_nsw_2155 string

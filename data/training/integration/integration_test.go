@@ -3,10 +3,10 @@ package integration_test
 import (
 	. "github.com/DennisDenuto/property-price-collector/data/training"
 
+	"github.com/DennisDenuto/property-price-collector/data"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pachyderm/pachyderm/src/client"
-	"github.com/DennisDenuto/property-price-collector/data"
 )
 
 var _ = Describe("Integration tests", func() {

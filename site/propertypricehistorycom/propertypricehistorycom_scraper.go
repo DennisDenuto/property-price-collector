@@ -1,15 +1,15 @@
 package propertypricehistorycom
 
 import (
+	"fmt"
 	"github.com/DennisDenuto/property-price-collector/data"
 	"github.com/PuerkitoBio/fetchbot"
-	"fmt"
-	"net/http"
 	"github.com/PuerkitoBio/goquery"
-	"strings"
-	"regexp"
-	"time"
+	"net/http"
 	"net/url"
+	"regexp"
+	"strings"
+	"time"
 )
 
 //https://www.propertypricehistory.com/sold/list/NSW/<<POSTCODE>>

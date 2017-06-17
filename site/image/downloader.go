@@ -1,12 +1,12 @@
 package image
 
 import (
+	"bytes"
 	"context"
+	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"github.com/pkg/errors"
-	"bytes"
 )
 
 type Downloader interface {

@@ -3,14 +3,14 @@ package training_test
 import (
 	. "github.com/DennisDenuto/property-price-collector/data/training"
 
+	"encoding/json"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/data/training/trainingfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/DennisDenuto/property-price-collector/data/training/trainingfakes"
-	"github.com/pkg/errors"
 	"github.com/pachyderm/pachyderm/src/client/pfs"
-	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/pkg/errors"
 	"io/ioutil"
-	"encoding/json"
 )
 
 var _ = Describe("TrainingDataRepo", func() {
@@ -37,7 +37,7 @@ var _ = Describe("TrainingDataRepo", func() {
 
 		Context("when repo already exists", func() {
 			BeforeEach(func() {
-				fakeApiClient.ListRepoReturns([]*pfs.RepoInfo{{Repo: &pfs.Repo{"training-data-repo"}} }, nil)
+				fakeApiClient.ListRepoReturns([]*pfs.RepoInfo{{Repo: &pfs.Repo{"training-data-repo"}}}, nil)
 			})
 
 			It("should not error", func() {

@@ -1,11 +1,11 @@
 package image
 
 import (
-	"io"
 	"context"
-	"time"
-	"sync"
 	log "github.com/Sirupsen/logrus"
+	"io"
+	"sync"
+	"time"
 )
 
 type MultiDownloader struct {

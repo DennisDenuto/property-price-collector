@@ -1,8 +1,8 @@
 package main
 
 import (
-	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 	"fmt"
+	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 	"github.com/PuerkitoBio/fetchbot"
 )
 

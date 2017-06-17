@@ -3,14 +3,14 @@ package realestatecomau_test
 import (
 	. "github.com/DennisDenuto/property-price-collector/site/realestatecomau"
 
+	"fmt"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/PuerkitoBio/fetchbot"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/PuerkitoBio/fetchbot"
 	"github.com/onsi/gomega/ghttp"
 	"net/url"
-	"fmt"
 	"time"
-	"github.com/DennisDenuto/property-price-collector/data"
 )
 
 var _ = Describe("PropertyScraper", func() {

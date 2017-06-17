@@ -1,14 +1,14 @@
 package image
 
 import (
+	"bytes"
+	"context"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pkg/errors"
 	"io"
-	"context"
-	"bytes"
 	"io/ioutil"
 	"strings"
-	"github.com/pkg/errors"
 )
 
 type FakeDownloader struct {

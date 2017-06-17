@@ -4,8 +4,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"testing"
 	"io/ioutil"
+	"testing"
 )
 
 func TestRealestatecomau(t *testing.T) {
