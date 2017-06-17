@@ -1,4 +1,4 @@
-memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
+memo = "e432d0dfbb08e0a3ace9cca0e936cabb7bd974af132c1ecc12fce1dd73ce1c4c"
 
 [[projects]]
   branch = "master"
@@ -25,9 +25,15 @@ memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
   revision = "349dd0209470eabd9514242c688c403c0926d266"
 
 [[projects]]
+  name = "github.com/gogo/protobuf"
+  packages = ["gogoproto","proto","protoc-gen-gogo/descriptor","sortkeys","types"]
+  revision = "100ba4e885062801d56799d78530b73b178a78f3"
+  version = "v0.4"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
-  packages = ["proto"]
+  packages = ["proto","ptypes/any"]
   revision = "e325f446bebc2998605911c0a2650d9920361d4a"
 
 [[projects]]
@@ -43,6 +49,12 @@ memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
   revision = "39a54bd3c3bbfe1c331a9b3207e92134c77ed812"
 
 [[projects]]
+  name = "github.com/pachyderm/pachyderm"
+  packages = ["src/client","src/client/health","src/client/pfs","src/client/pkg/config","src/client/pkg/grpcutil","src/client/pkg/uuid","src/client/pps","src/client/version","src/client/version/versionpb"]
+  revision = "39561cec3328997919faa514600eecb53546ee3f"
+  version = "v1.4.8"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
@@ -55,6 +67,12 @@ memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
   revision = "49fee9c1c0db1c366003ede4cc665f9924a97521"
 
 [[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
+  version = "v1.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/temoto/robotstxt-go"
   packages = ["."]
@@ -63,7 +81,7 @@ memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["html","html/atom","html/charset"]
+  packages = ["context","html","html/atom","html/charset","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
   revision = "dfe83d419c9403b40b19d08cdba2afec27b002f7"
 
 [[projects]]
@@ -75,8 +93,20 @@ memo = "8d0f3f4a578ebfe3d2324114b28d9ba9a2b0365a27d0da80cd67520b35a8fba1"
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["encoding","encoding/charmap","encoding/htmlindex","encoding/internal","encoding/internal/identifier","encoding/japanese","encoding/korean","encoding/simplifiedchinese","encoding/traditionalchinese","encoding/unicode","internal/gen","internal/tag","internal/utf8internal","language","runes","transform","unicode/cldr"]
+  packages = ["encoding","encoding/charmap","encoding/htmlindex","encoding/internal","encoding/internal/identifier","encoding/japanese","encoding/korean","encoding/simplifiedchinese","encoding/traditionalchinese","encoding/unicode","internal/gen","internal/tag","internal/triegen","internal/ucd","internal/utf8internal","language","runes","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
   revision = "3491b61b9edc56653ad4333e605e2908e46a036b"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/genproto"
+  packages = ["googleapis/rpc/status"]
+  revision = "aa2eb687b4d3e17154372564ad8d6bf11c3cf21f"
+
+[[projects]]
+  name = "google.golang.org/grpc"
+  packages = [".","codes","credentials","grpclb/grpc_lb_v1","grpclog","internal","keepalive","metadata","naming","peer","stats","status","tap","transport"]
+  revision = "42c095b6c9bdd80d4435b064508c398afdb0ec99"
+  version = "v1.4.1"
 
 [[projects]]
   name = "gopkg.in/sourcemap.v1"
