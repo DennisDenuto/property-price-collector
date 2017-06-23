@@ -132,7 +132,7 @@ var _ = Describe("TrainingDataRepo", func() {
 			propertyHistoryData = data.PropertyHistoryData{
 				Property: data.Property{
 					Address: data.Address{
-						AddressLine1: "123 fake street",
+						AddressLine1: "1/123-124 fake street",
 						State:        "NSW",
 						Suburb:       "north sydney",
 					},
@@ -154,7 +154,7 @@ var _ = Describe("TrainingDataRepo", func() {
 			repo, commitID, path, reader := fakeApiClient.PutFileArgsForCall(0)
 			Expect(repo).To(Equal("training-data-properties"))
 			Expect(commitID).To(Equal("master"))
-			Expect(path).To(Equal("/nsw/north_sydney/123_fake_street"))
+			Expect(path).To(Equal("/nsw/north_sydney/1_123_124_fake_street"))
 
 			propertyArg, err := ioutil.ReadAll(reader)
 			Expect(err).ToNot(HaveOccurred())
