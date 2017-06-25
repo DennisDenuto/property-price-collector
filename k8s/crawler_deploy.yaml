@@ -1,0 +1,14 @@
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: training-data-crawler-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: training-data-crawler
+    spec:
+      containers:
+      - name: training-data-crawler
+        image: dennisdenuto/property-price-collector:latest

@@ -81,7 +81,10 @@ func historicalPropertyList(propertyHistoryDataChannel chan data.PropertyHistory
 		if nextPageUrl, found := doc.Find(".goto_nextpage").Attr("href"); found {
 			nextPageParseUrl, err := url.Parse(nextPageUrl)
 			if err == nil {
+				println(fmt.Sprintf(">>>>>>>>> http://%s%s", host, nextPageParseUrl.Path))
 				fc.Q.SendStringGet(fmt.Sprintf("http://%s%s", host, nextPageParseUrl.Path))
+			} else {
+				fmt.Println("error getting next page url %s", err.Error())
 			}
 		}
 	})
