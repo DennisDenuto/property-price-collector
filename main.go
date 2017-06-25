@@ -4,9 +4,11 @@ import "github.com/PuerkitoBio/fetchbot"
 import (
 	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 	"github.com/DennisDenuto/property-price-collector/data/training"
-	"github.com/pachyderm/pachyderm/src/client"
+	pachdclient "github.com/pachyderm/pachyderm/src/client"
 	"fmt"
 	"os"
+	"time"
+	"log"
 )
 
 func main() {
@@ -25,7 +27,9 @@ func main() {
 	}
 
 	client, err := getPachdClient()
-
+	if err != nil {
+		panic(err)
+	}
 	repo := training.NewTrainingDataRepo(client)
 
 	err = repo.Create()
@@ -34,18 +38,31 @@ func main() {
 	}
 
 	for property := range pphcFetcher.GetProperties() {
-		err = repo.StartTxn()
-		if err != nil {
-			panic(err)
-		}
-		println(fmt.Sprintf("%+#v", property))
+		err = retryDuring(10*time.Minute, 10*time.Second, func() error {
+			err = repo.StartTxn()
+			if err != nil {
+				return err
+			}
 
-		err := repo.Add(property)
-		if err != nil {
-			fmt.Errorf("adding property to repo errored: %s", err)
-		}
+			err := repo.Add(property)
+			if err != nil {
+				fmt.Errorf("adding property to repo errored: %s", err)
+			}
 
-		err = repo.Commit()
+			err = repo.Commit()
+			if err != nil {
+				return err
+			}
+
+			println(fmt.Sprintf("%+#v", property))
+			return nil
+		}, func() {
+			client, err := getPachdClient()
+			if err != nil {
+				repo = training.NewTrainingDataRepo(client)
+			}
+		})
+
 		if err != nil {
 			panic(err)
 		}
@@ -53,17 +70,41 @@ func main() {
 
 	queue.Block()
 }
-func getPachdClient() (*client.APIClient, error) {
+
+func getPachdClient() (training.APIClient, error) {
 	host, foundHost := os.LookupEnv("PACHD_SERVICE_HOST")
 	port, foundPort := os.LookupEnv("PACHD_SERVICE_PORT")
 
 	if !foundHost || !foundPort {
-		panic("missing required env variable (PACHD_SERVICE_HOST|PACHD_SERVICE_PORT")
+		return nil, fmt.Errorf("missing required env variable (PACHD_SERVICE_HOST|PACHD_SERVICE_PORT")
 	}
 
-	client, err := client.NewFromAddress(fmt.Sprintf("%s:%s", host, port))
+	client, err := pachdclient.NewFromAddress(fmt.Sprintf("%s:%s", host, port))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return client, err
+	return client, nil
+}
+
+func retryDuring(duration time.Duration, sleep time.Duration, callback func() error, attemptRepair func()) (err error) {
+	t0 := time.Now()
+	i := 0
+	for {
+		i++
+
+		err = callback()
+		if err == nil {
+			return
+		}
+
+		delta := time.Now().Sub(t0)
+		if delta > duration {
+			return fmt.Errorf("after %d attempts (during %s), last error: %s", i, delta, err)
+		}
+
+		time.Sleep(sleep)
+
+		log.Println("retrying after error:", err)
+		attemptRepair()
+	}
 }

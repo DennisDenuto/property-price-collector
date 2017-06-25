@@ -14,8 +14,8 @@ type TrainingDataRepo struct {
 	client APIClient
 }
 
-func NewTrainingDataRepo(client APIClient) TrainingDataRepo {
-	return TrainingDataRepo{
+func NewTrainingDataRepo(client APIClient) *TrainingDataRepo {
+	return &TrainingDataRepo{
 		client: client,
 	}
 }
