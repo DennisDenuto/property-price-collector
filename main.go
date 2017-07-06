@@ -2,23 +2,28 @@ package main
 
 import "github.com/PuerkitoBio/fetchbot"
 import (
-	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
-	"github.com/DennisDenuto/property-price-collector/data/training"
-	pachdclient "github.com/pachyderm/pachyderm/src/client"
 	"fmt"
+	"github.com/DennisDenuto/property-price-collector/data/training"
+	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
+	log "github.com/Sirupsen/logrus"
+	pachdclient "github.com/pachyderm/pachyderm/src/client"
 	"os"
+	"strconv"
 	"time"
-	"log"
 )
 
 func main() {
-
 	mux := fetchbot.NewMux()
 
-	pphcFetcher := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", 2000, 2155)
+	//2000 2155
+	minPostcode, err := strconv.Atoi(os.Getenv("START_POSTCODE"))
+	maxPostcode, err := strconv.Atoi(os.Getenv("END_POSTCODE"))
+
+	pphcFetcher := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", minPostcode, maxPostcode)
 	pphcFetcher.SetupMux(mux)
 
 	fetcher := fetchbot.New(mux)
+	fetcher.AutoClose = true
 
 	queue := fetcher.Start()
 
@@ -28,47 +33,57 @@ func main() {
 
 	client, err := getPachdClient()
 	if err != nil {
+		log.WithError(err).Error("unable to get pachd client")
 		panic(err)
 	}
 	repo := training.NewTrainingDataRepo(client)
 
 	err = repo.Create()
 	if err != nil {
+		log.WithError(err).Error("unable to create repo")
 		panic(err)
 	}
+	for {
+		select {
+		case property := <-pphcFetcher.GetProperties():
+			err = retryDuring(10*time.Minute, 10*time.Second, func() error {
+				err = repo.StartTxn()
+				if err != nil {
+					log.WithError(err).Error("unable to start txn")
+					return err
+				}
 
-	for property := range pphcFetcher.GetProperties() {
-		err = retryDuring(10*time.Minute, 10*time.Second, func() error {
-			err = repo.StartTxn()
+				err := repo.Add(property)
+				if err != nil {
+					fmt.Errorf("adding property to repo errored: %s", err)
+				}
+
+				err = repo.Commit()
+				if err != nil {
+					log.WithError(err).Error("unable to commit txn")
+					return err
+				}
+
+				log.Infof("%+#v", property)
+
+				return nil
+			}, func() {
+				client, err := getPachdClient()
+				if err != nil {
+					repo = training.NewTrainingDataRepo(client)
+				}
+			})
+
 			if err != nil {
-				return err
+				log.WithError(err).Error("unable to write property into datastore")
+				panic(err)
 			}
-
-			err := repo.Add(property)
-			if err != nil {
-				fmt.Errorf("adding property to repo errored: %s", err)
-			}
-
-			err = repo.Commit()
-			if err != nil {
-				return err
-			}
-
-			println(fmt.Sprintf("%+#v", property))
-			return nil
-		}, func() {
-			client, err := getPachdClient()
-			if err != nil {
-				repo = training.NewTrainingDataRepo(client)
-			}
-		})
-
-		if err != nil {
-			panic(err)
+		case <-queue.Done():
+			log.Info("Finished")
+			return
 		}
 	}
 
-	queue.Block()
 }
 
 func getPachdClient() (training.APIClient, error) {
@@ -76,11 +91,12 @@ func getPachdClient() (training.APIClient, error) {
 	port, foundPort := os.LookupEnv("PACHD_SERVICE_PORT")
 
 	if !foundHost || !foundPort {
-		return nil, fmt.Errorf("missing required env variable (PACHD_SERVICE_HOST|PACHD_SERVICE_PORT")
+		return nil, fmt.Errorf("missing required env variable (PACHD_SERVICE_HOST|PACHD_SERVICE_PORT)")
 	}
 
 	client, err := pachdclient.NewFromAddress(fmt.Sprintf("%s:%s", host, port))
 	if err != nil {
+		log.WithError(err).Error("unable to connect to pachyderm")
 		return nil, err
 	}
 	return client, nil
@@ -104,7 +120,7 @@ func retryDuring(duration time.Duration, sleep time.Duration, callback func() er
 
 		time.Sleep(sleep)
 
-		log.Println("retrying after error:", err)
+		log.WithError(err).Debug("retrying after error")
 		attemptRepair()
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/DennisDenuto/property-price-collector/data"
 	"github.com/PuerkitoBio/fetchbot"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/Sirupsen/logrus"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -47,7 +48,8 @@ func historicalPropertyList(propertyHistoryDataChannel chan data.PropertyHistory
 	return fetchbot.HandlerFunc(func(fc *fetchbot.Context, response *http.Response, _ error) {
 		doc, err := goquery.NewDocumentFromResponse(response)
 		if err != nil {
-			panic(err)
+			logrus.WithError(err).Errorf("unable to get document. Skipping")
+			return
 		}
 
 		doc.Find("#search_result .col-sm-12").Each(func(index int, selection *goquery.Selection) {
@@ -81,10 +83,10 @@ func historicalPropertyList(propertyHistoryDataChannel chan data.PropertyHistory
 		if nextPageUrl, found := doc.Find(".goto_nextpage").Attr("href"); found {
 			nextPageParseUrl, err := url.Parse(nextPageUrl)
 			if err == nil {
-				println(fmt.Sprintf(">>>>>>>>> http://%s%s", host, nextPageParseUrl.Path))
+				logrus.Debugf("Adding next page: http://%s%s", host, nextPageParseUrl.Path)
 				fc.Q.SendStringGet(fmt.Sprintf("http://%s%s", host, nextPageParseUrl.Path))
 			} else {
-				fmt.Println("error getting next page url %s", err.Error())
+				logrus.WithError(err).Debug("unable to get next page url")
 			}
 		}
 	})
@@ -93,7 +95,7 @@ func historicalPropertyList(propertyHistoryDataChannel chan data.PropertyHistory
 func getBedsBathsCars(selection *goquery.Selection) (beds string, baths string, cars string) {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println("Recovered in f", r)
+			logrus.WithError(r.(error)).Debug("Recovered getting beds and bath")
 		}
 	}()
 
