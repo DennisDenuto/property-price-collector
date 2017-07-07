@@ -156,7 +156,9 @@ func (q *Queue) Block() {
 	<-q.done
 }
 
-func (q *Queue) Done() chan struct{} {
+// Done returns a channel that is closed when the Queue is closed (either
+// via Close or Cancel). Multiple calls always return the same channel.
+func (q *Queue) Done() <-chan struct{} {
 	return q.done
 }
 

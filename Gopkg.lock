@@ -1,10 +1,10 @@
-memo = "e432d0dfbb08e0a3ace9cca0e936cabb7bd974af132c1ecc12fce1dd73ce1c4c"
+memo = "c98e443a515ad0af88c413a9ab515aa15534e81dd6af99d8b568d8245c20b70b"
 
 [[projects]]
-  branch = "master"
   name = "github.com/PuerkitoBio/fetchbot"
   packages = ["."]
-  revision = "fa68f87b3accbd050467f744722059235362fe0f"
+  revision = "557db687b8f5665f87ee340cd6eeb5ac412a4d86"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/PuerkitoBio/goquery"
@@ -45,7 +45,7 @@ memo = "e432d0dfbb08e0a3ace9cca0e936cabb7bd974af132c1ecc12fce1dd73ce1c4c"
 [[projects]]
   branch = "master"
   name = "github.com/onsi/gomega"
-  packages = [".","format","ghttp","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
+  packages = [".","format","gbytes","gexec","ghttp","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
   revision = "39a54bd3c3bbfe1c331a9b3207e92134c77ed812"
 
 [[projects]]
