@@ -13,6 +13,8 @@ import (
 )
 
 func main() {
+	log.SetLevel(log.DebugLevel)
+
 	mux := fetchbot.NewMux()
 
 	//2000 2155
@@ -47,18 +49,18 @@ func main() {
 		select {
 		case property := <-pphcFetcher.GetProperties():
 			err = retryDuring(10*time.Minute, 10*time.Second, func() error {
-				err = repo.StartTxn()
+				commitId, err := repo.StartTxn()
 				if err != nil {
 					log.WithError(err).Error("unable to start txn")
 					return err
 				}
 
-				err := repo.Add(property)
+				err = repo.Add(property)
 				if err != nil {
 					fmt.Errorf("adding property to repo errored: %s", err)
 				}
 
-				err = repo.Commit()
+				err = repo.Commit(commitId)
 				if err != nil {
 					log.WithError(err).Error("unable to commit txn")
 					return err

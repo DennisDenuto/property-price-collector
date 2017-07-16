@@ -13,9 +13,9 @@ const training_data_repo_name = "training-data-properties"
 //go:generate counterfeiter . Repo
 type Repo interface {
 	Create() error
-	StartTxn() error
+	StartTxn() (string, error)
 	Add(interface{}) error
-	Commit() error
+	Commit(commitId string) error
 }
 
 //go:generate counterfeiter . APIClient

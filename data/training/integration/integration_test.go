@@ -26,8 +26,11 @@ var _ = Describe("Integration tests", func() {
 			Expect(ListRepos()).To(ContainElement("training-data-properties"))
 		})
 
+		var startedTxn string
+		var err error
 		By("starting a txn", func() {
-			Expect(trainingDataRepo.StartTxn()).To(Succeed())
+			startedTxn, err = trainingDataRepo.StartTxn()
+			Expect(err).To(Succeed())
 			Expect(ListCommits("training-data-properties")).To(ContainElement("training-data-properties"))
 		})
 
@@ -45,7 +48,7 @@ var _ = Describe("Integration tests", func() {
 		})
 
 		By("commiting transaction", func() {
-			Expect(trainingDataRepo.Commit()).To(Succeed())
+			Expect(trainingDataRepo.Commit(startedTxn)).To(Succeed())
 		})
 
 		Expect(GetFile("training-data-properties", "master", "/nsw/north_sydney/123_fake_street")).ToNot(BeEmpty())

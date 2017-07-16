@@ -75,10 +75,13 @@ var _ = Describe("TrainingDataRepo", func() {
 	Describe("StartTxn", func() {
 		BeforeEach(func() {
 			fakeApiClient.ListCommitByRepoReturns([]*pfs.CommitInfo{}, nil)
+			fakeApiClient.StartCommitReturns(&pfs.Commit{ID: "123"}, nil)
 		})
 
 		It("should create a commit for correct repo", func() {
-			Expect(trainingDataRepo.StartTxn()).To(Succeed())
+			commitId, err := trainingDataRepo.StartTxn()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(commitId).To(Equal("123"))
 
 			Expect(fakeApiClient.ListCommitByRepoCallCount()).To(Equal(1))
 			Expect(fakeApiClient.ListCommitByRepoArgsForCall(0)).To(Equal("training-data-properties"))
@@ -94,7 +97,7 @@ var _ = Describe("TrainingDataRepo", func() {
 			})
 
 			It("should return an error", func() {
-				err := trainingDataRepo.StartTxn()
+				_, err := trainingDataRepo.StartTxn()
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError("starting txn: some-error"))
 			})
@@ -102,11 +105,15 @@ var _ = Describe("TrainingDataRepo", func() {
 
 		Context("when transaction was previously started but not finished", func() {
 			BeforeEach(func() {
-				fakeApiClient.ListCommitByRepoReturns([]*pfs.CommitInfo{{}}, nil)
+				fakeApiClient.ListCommitByRepoReturns([]*pfs.CommitInfo{
+					{Finished: nil, Commit: &pfs.Commit{ID: "existing-commit-id"} },
+				}, nil)
 			})
 
 			It("should not try to start it again", func() {
-				Expect(trainingDataRepo.StartTxn()).To(Succeed())
+				commitId, err := trainingDataRepo.StartTxn()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(commitId).To(Equal("existing-commit-id"))
 				Expect(fakeApiClient.StartCommitCallCount()).To(Equal(0))
 			})
 
@@ -116,7 +123,7 @@ var _ = Describe("TrainingDataRepo", func() {
 				})
 
 				It("should return error", func() {
-					err := trainingDataRepo.StartTxn()
+					_, err := trainingDataRepo.StartTxn()
 					Expect(err).To(HaveOccurred())
 					Expect(err).To(MatchError("listing txn: some-error"))
 				})
@@ -164,12 +171,12 @@ var _ = Describe("TrainingDataRepo", func() {
 
 	Describe("Commit", func() {
 		It("should finish transaction", func() {
-			Expect(trainingDataRepo.Commit()).To(Succeed())
+			Expect(trainingDataRepo.Commit("master-123")).To(Succeed())
 
 			Expect(fakeApiClient.FinishCommitCallCount()).To(Equal(1))
 			repo, commit := fakeApiClient.FinishCommitArgsForCall(0)
 			Expect(repo).To(Equal("training-data-properties"))
-			Expect(commit).To(Equal("master"))
+			Expect(commit).To(Equal("master-123"))
 		})
 
 		Context("when finishing a commit fails", func() {
@@ -179,7 +186,7 @@ var _ = Describe("TrainingDataRepo", func() {
 			})
 
 			It("should return an error", func() {
-				err := trainingDataRepo.Commit()
+				err := trainingDataRepo.Commit("master")
 				Expect(err).To(HaveOccurred())
 
 				Expect(err).To(MatchError("committing: some-error"))

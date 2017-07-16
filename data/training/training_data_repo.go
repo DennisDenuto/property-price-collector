@@ -32,23 +32,23 @@ func (t TrainingDataRepo) Create() error {
 	return nil
 }
 
-func (t TrainingDataRepo) StartTxn() error {
+func (t TrainingDataRepo) StartTxn() (string, error) {
 	commits, err := t.client.ListCommitByRepo(training_data_repo_name)
 	if err != nil {
-		return errors.Wrap(err, "listing txn")
+		return "", errors.Wrap(err, "listing txn")
 	}
 
 	for _, value := range commits {
 		if value.Finished == nil {
-			return nil
+			return value.Commit.ID, nil
 		}
 	}
 
-	_, err = t.client.StartCommit(training_data_repo_name, "master")
+	startedCommit, err := t.client.StartCommit(training_data_repo_name, "master")
 	if err != nil {
-		return errors.Wrap(err, "starting txn")
+		return "", errors.Wrap(err, "starting txn")
 	}
-	return nil
+	return startedCommit.ID, nil
 }
 
 func (t TrainingDataRepo) Add(file interface{}) error {
@@ -82,8 +82,8 @@ func sanitizeAddress(address string) string {
 	}, address)
 }
 
-func (t TrainingDataRepo) Commit() error {
-	err := t.client.FinishCommit(training_data_repo_name, "master")
+func (t TrainingDataRepo) Commit(commitId string) error {
+	err := t.client.FinishCommit(training_data_repo_name, commitId)
 	if err != nil {
 		return errors.Wrap(err, "committing")
 	}

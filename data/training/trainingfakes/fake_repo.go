@@ -14,11 +14,12 @@ type FakeRepo struct {
 	createReturns     struct {
 		result1 error
 	}
-	StartTxnStub        func() error
+	StartTxnStub        func() (string, error)
 	startTxnMutex       sync.RWMutex
 	startTxnArgsForCall []struct{}
 	startTxnReturns     struct {
-		result1 error
+		result1 string
+		result2 error
 	}
 	AddStub        func(interface{}) error
 	addMutex       sync.RWMutex
@@ -28,10 +29,12 @@ type FakeRepo struct {
 	addReturns struct {
 		result1 error
 	}
-	CommitStub        func() error
+	CommitStub        func(commitId string) error
 	commitMutex       sync.RWMutex
-	commitArgsForCall []struct{}
-	commitReturns     struct {
+	commitArgsForCall []struct {
+		commitId string
+	}
+	commitReturns struct {
 		result1 error
 	}
 	invocations      map[string][][]interface{}
@@ -63,7 +66,7 @@ func (fake *FakeRepo) CreateReturns(result1 error) {
 	}{result1}
 }
 
-func (fake *FakeRepo) StartTxn() error {
+func (fake *FakeRepo) StartTxn() (string, error) {
 	fake.startTxnMutex.Lock()
 	fake.startTxnArgsForCall = append(fake.startTxnArgsForCall, struct{}{})
 	fake.recordInvocation("StartTxn", []interface{}{})
@@ -71,7 +74,7 @@ func (fake *FakeRepo) StartTxn() error {
 	if fake.StartTxnStub != nil {
 		return fake.StartTxnStub()
 	} else {
-		return fake.startTxnReturns.result1
+		return fake.startTxnReturns.result1, fake.startTxnReturns.result2
 	}
 }
 
@@ -81,11 +84,12 @@ func (fake *FakeRepo) StartTxnCallCount() int {
 	return len(fake.startTxnArgsForCall)
 }
 
-func (fake *FakeRepo) StartTxnReturns(result1 error) {
+func (fake *FakeRepo) StartTxnReturns(result1 string, result2 error) {
 	fake.StartTxnStub = nil
 	fake.startTxnReturns = struct {
-		result1 error
-	}{result1}
+		result1 string
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeRepo) Add(arg1 interface{}) error {
@@ -121,13 +125,15 @@ func (fake *FakeRepo) AddReturns(result1 error) {
 	}{result1}
 }
 
-func (fake *FakeRepo) Commit() error {
+func (fake *FakeRepo) Commit(commitId string) error {
 	fake.commitMutex.Lock()
-	fake.commitArgsForCall = append(fake.commitArgsForCall, struct{}{})
-	fake.recordInvocation("Commit", []interface{}{})
+	fake.commitArgsForCall = append(fake.commitArgsForCall, struct {
+		commitId string
+	}{commitId})
+	fake.recordInvocation("Commit", []interface{}{commitId})
 	fake.commitMutex.Unlock()
 	if fake.CommitStub != nil {
-		return fake.CommitStub()
+		return fake.CommitStub(commitId)
 	} else {
 		return fake.commitReturns.result1
 	}
@@ -137,6 +143,12 @@ func (fake *FakeRepo) CommitCallCount() int {
 	fake.commitMutex.RLock()
 	defer fake.commitMutex.RUnlock()
 	return len(fake.commitArgsForCall)
+}
+
+func (fake *FakeRepo) CommitArgsForCall(i int) string {
+	fake.commitMutex.RLock()
+	defer fake.commitMutex.RUnlock()
+	return fake.commitArgsForCall[i].commitId
 }
 
 func (fake *FakeRepo) CommitReturns(result1 error) {

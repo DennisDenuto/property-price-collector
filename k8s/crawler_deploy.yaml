@@ -29,12 +29,5 @@ spec:
           - name: START_POSTCODE
             value: "2000"
           - name: END_POSTCODE
-            value: "2065"
-        - name: training-data-crawler-2
-          image: dennisdenuto/property-price-collector:latest
-          env:
-          - name: START_POSTCODE
-            value: "2066"
-          - name: END_POSTCODE
             value: "2155"
       restartPolicy: OnFailure
