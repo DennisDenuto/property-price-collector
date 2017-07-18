@@ -46,7 +46,7 @@ func (r PropertyPriceHistoryCom) SetupMux(mux *fetchbot.Mux) {
 
 func historicalPropertyList(propertyHistoryDataChannel chan data.PropertyHistoryData, host string) fetchbot.Handler {
 	return fetchbot.HandlerFunc(func(fc *fetchbot.Context, response *http.Response, _ error) {
-		logrus.Debugf("processing host %s", host)
+		logrus.Debugf("processing host %s", response.Request.URL.String())
 		doc, err := goquery.NewDocumentFromResponse(response)
 		if err != nil {
 			logrus.WithError(err).Errorf("unable to get document. Skipping")
