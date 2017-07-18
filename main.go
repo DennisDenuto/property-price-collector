@@ -86,6 +86,7 @@ func main() {
 		}
 	}
 
+	log.Debug("exiting now")
 }
 
 func getPachdClient() (training.APIClient, error) {
