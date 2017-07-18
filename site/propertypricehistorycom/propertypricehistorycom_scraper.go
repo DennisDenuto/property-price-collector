@@ -151,3 +151,7 @@ func getStateFromUrl(addressSelection *goquery.Selection) string {
 func (r PropertyPriceHistoryCom) GetProperties() <-chan data.PropertyHistoryData {
 	return r.PropertyChannel
 }
+
+func (r PropertyPriceHistoryCom) Done() {
+	close(r.PropertyChannel)
+}

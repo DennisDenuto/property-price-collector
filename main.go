@@ -47,7 +47,11 @@ func main() {
 	}
 	for {
 		select {
-		case property := <-pphcFetcher.GetProperties():
+		case property, ok := <-pphcFetcher.GetProperties():
+			if !ok {
+				log.Debug("no more properties to save. exiting")
+				return
+			}
 			err = retryDuring(10*time.Minute, 10*time.Second, func() error {
 				commitId, err := repo.StartTxn()
 				if err != nil {
@@ -82,7 +86,7 @@ func main() {
 			}
 		case <-queue.Done():
 			log.Info("Finished")
-			return
+			pphcFetcher.Done()
 		}
 	}
 
