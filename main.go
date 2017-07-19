@@ -38,7 +38,10 @@ func main() {
 		log.WithError(err).Error("unable to get pachd client")
 		panic(err)
 	}
-	repo := training.NewTrainingDataRepo(client)
+	repo := training.NewBatchTrainingDataRepo(
+		training.NewTrainingDataRepo(client),
+		1000,
+	)
 
 	err = repo.Create()
 	if err != nil {
