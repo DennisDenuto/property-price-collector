@@ -79,7 +79,7 @@ func main() {
 			}, func() {
 				client, err := getPachdClient()
 				if err != nil {
-					repo = training.NewTrainingDataRepo(client)
+					repo = training.NewBatchTrainingDataRepo(training.NewTrainingDataRepo(client), 1000)
 				}
 			})
 
