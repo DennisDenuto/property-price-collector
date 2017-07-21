@@ -33,3 +33,7 @@ func (t *BatchTrainingDataRepo) Commit(commitId string) error {
 
 	return nil
 }
+
+func (t *BatchTrainingDataRepo) ForceCommit(commitId string) error {
+	return t.repo.Commit(commitId)
+}
