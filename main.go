@@ -87,29 +87,27 @@ func main() {
 			log.Info("Finished")
 			pphcFetcher.Done()
 		}
-
-		err = retryDuring(10*time.Minute, 10*time.Second, func() error {
-			err = repo.ForceCommit(commitId)
-			if err != nil {
-				log.WithError(err).Error("unable to commit txn")
-				panic(err)
-			}
-
-			return nil
-		}, func() {
-			client, err := getPachdClient()
-			if err != nil {
-				repo = training.NewBatchTrainingDataRepo(training.NewTrainingDataRepo(client), 1000)
-			}
-		})
-
+	}
+	
+	err = retryDuring(10*time.Minute, 10*time.Second, func() error {
+		err = repo.ForceCommit(commitId)
 		if err != nil {
-			log.WithError(err).Error("unable to finish txn")
+			log.WithError(err).Error("unable to commit txn")
 			panic(err)
 		}
 
-	}
+		return nil
+	}, func() {
+		client, err := getPachdClient()
+		if err != nil {
+			repo = training.NewBatchTrainingDataRepo(training.NewTrainingDataRepo(client), 1000)
+		}
+	})
 
+	if err != nil {
+		log.WithError(err).Error("unable to finish txn")
+		panic(err)
+	}
 	log.Debug("exiting now")
 }
 
