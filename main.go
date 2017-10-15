@@ -3,7 +3,7 @@ package main
 import "github.com/PuerkitoBio/fetchbot"
 import (
 	"fmt"
-	"github.com/DennisDenuto/property-price-collector/data/training"
+	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 	log "github.com/Sirupsen/logrus"
 	pachdclient "github.com/pachyderm/pachyderm/src/client"
@@ -38,8 +38,8 @@ func main() {
 		log.WithError(err).Error("unable to get pachd client")
 		panic(err)
 	}
-	repo := training.NewBatchTrainingDataRepo(
-		training.NewTrainingDataRepo(client),
+	repo := pachyderm.NewBatchTrainingDataRepo(
+		pachyderm.NewTrainingDataRepo(client),
 		1000,
 	)
 
@@ -55,12 +55,40 @@ func main() {
 		panic(err)
 	}
 
+	err = saveProperties(pphcFetcher, repo, queue)
+	if err != nil {
+		log.WithError(err).Error("saving properties returned an error. attempting to commit...")
+	}
+
+	err = retryDuring(10*time.Minute, 10*time.Second, func() error {
+		err = repo.ForceCommit(commitId)
+		if err != nil {
+			log.WithError(err).Error("unable to commit txn")
+			return err
+		}
+
+		return nil
+	}, func() {
+		client, err := getPachdClient()
+		if err != nil {
+			repo = pachyderm.NewBatchTrainingDataRepo(pachyderm.NewTrainingDataRepo(client), 1000)
+		}
+	})
+
+	if err != nil {
+		log.WithError(err).Error("unable to finish txn")
+		panic(err)
+	}
+	log.Debug("exiting now")
+}
+
+func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *pachyderm.BatchTrainingDataRepo, queue *fetchbot.Queue) (err error) {
 	for {
 		select {
 		case property, ok := <-pphcFetcher.GetProperties():
 			if !ok {
 				log.Debug("no more properties to save. exiting")
-				return
+				return nil
 			}
 			err = retryDuring(10*time.Minute, 10*time.Second, func() error {
 				err = repo.Add(property)
@@ -75,7 +103,7 @@ func main() {
 			}, func() {
 				client, err := getPachdClient()
 				if err != nil {
-					repo = training.NewBatchTrainingDataRepo(training.NewTrainingDataRepo(client), 1000)
+					repo = pachyderm.NewBatchTrainingDataRepo(pachyderm.NewTrainingDataRepo(client), 1000)
 				}
 			})
 
@@ -88,30 +116,8 @@ func main() {
 			pphcFetcher.Done()
 		}
 	}
-	
-	err = retryDuring(10*time.Minute, 10*time.Second, func() error {
-		err = repo.ForceCommit(commitId)
-		if err != nil {
-			log.WithError(err).Error("unable to commit txn")
-			panic(err)
-		}
-
-		return nil
-	}, func() {
-		client, err := getPachdClient()
-		if err != nil {
-			repo = training.NewBatchTrainingDataRepo(training.NewTrainingDataRepo(client), 1000)
-		}
-	})
-
-	if err != nil {
-		log.WithError(err).Error("unable to finish txn")
-		panic(err)
-	}
-	log.Debug("exiting now")
 }
-
-func getPachdClient() (training.APIClient, error) {
+func getPachdClient() (pachyderm.APIClient, error) {
 	host, foundHost := os.LookupEnv("PACHD_SERVICE_HOST")
 	port, foundPort := os.LookupEnv("PACHD_SERVICE_PORT")
 

@@ -1,4 +1,4 @@
-package training_test
+package pachyderm
 
 import (
 	. "github.com/onsi/ginkgo"

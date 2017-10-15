@@ -1,11 +1,12 @@
-package training_test
+package pachyderm_test
 
 import (
-	. "github.com/DennisDenuto/property-price-collector/data/training"
+	"github.com/DennisDenuto/property-price-collector/data/training"
 
 	"encoding/json"
+	. "github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 	"github.com/DennisDenuto/property-price-collector/data"
-	"github.com/DennisDenuto/property-price-collector/data/training/trainingfakes"
+	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm/pachydermfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pachyderm/pachyderm/src/client/pfs"
@@ -15,11 +16,11 @@ import (
 
 var _ = Describe("BatchTrainingDataRepo", func() {
 
-	var trainingDataRepo Repo
-	var fakeApiClient *trainingfakes.FakeAPIClient
+	var trainingDataRepo training.TxnRepo
+	var fakeApiClient *pachydermfakes.FakeAPIClient
 
 	BeforeEach(func() {
-		fakeApiClient = &trainingfakes.FakeAPIClient{}
+		fakeApiClient = &pachydermfakes.FakeAPIClient{}
 		trainingDataRepo = NewBatchTrainingDataRepo(NewTrainingDataRepo(fakeApiClient), 1)
 	})
 
@@ -106,7 +107,7 @@ var _ = Describe("BatchTrainingDataRepo", func() {
 		Context("when transaction was previously started but not finished", func() {
 			BeforeEach(func() {
 				fakeApiClient.ListCommitByRepoReturns([]*pfs.CommitInfo{
-					{Finished: nil, Commit: &pfs.Commit{ID: "existing-commit-id"} },
+					{Finished: nil, Commit: &pfs.Commit{ID: "existing-commit-id"}},
 				}, nil)
 			})
 

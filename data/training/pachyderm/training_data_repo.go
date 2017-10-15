@@ -1,14 +1,19 @@
-package training
+package pachyderm
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/data/training"
 	"github.com/pkg/errors"
 	"path/filepath"
 	"strings"
 	"unicode"
 )
+
+const training_data_repo_name = "training-data-properties"
+
+var _ training.Repo = TrainingDataRepo{}
 
 type TrainingDataRepo struct {
 	client APIClient

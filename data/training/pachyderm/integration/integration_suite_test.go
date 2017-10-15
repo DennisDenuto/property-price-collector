@@ -1,4 +1,4 @@
-package integration_test
+package integration
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -35,7 +35,7 @@ var _ = AfterSuite(func() {
 })
 
 func startMinikube() {
-	cmd := exec.Command("../../../bin/start-local-pachyderm.sh")
+	cmd := exec.Command("../../../../bin/start-local-pachyderm.sh")
 	session, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Expect(err).ToNot(HaveOccurred())
 	Eventually(session, 5*time.Minute).Should(gbytes.Say("done"))

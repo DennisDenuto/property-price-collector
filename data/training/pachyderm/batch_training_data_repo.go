@@ -1,4 +1,4 @@
-package training
+package pachyderm
 
 type BatchTrainingDataRepo struct {
 	repo             *TrainingDataRepo

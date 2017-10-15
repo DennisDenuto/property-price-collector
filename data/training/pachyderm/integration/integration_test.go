@@ -1,4 +1,4 @@
-package integration_test
+package integration
 
 import (
 	. "github.com/DennisDenuto/property-price-collector/data/training"
@@ -7,17 +7,18 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pachyderm/pachyderm/src/client"
+	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 )
 
 var _ = Describe("Integration tests", func() {
 
-	var trainingDataRepo Repo
+	var trainingDataRepo TxnRepo
 
 	BeforeEach(func() {
 		client, err := client.NewFromAddress("0.0.0.0:30650")
 		Expect(err).ToNot(HaveOccurred())
 
-		trainingDataRepo = NewTrainingDataRepo(client)
+		trainingDataRepo = pachyderm.NewTrainingDataRepo(client)
 	})
 
 	It("should allow writing a file in a transaction", func() {
