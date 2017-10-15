@@ -35,10 +35,15 @@ type Property struct {
 }
 
 type PropertyHistoryData struct {
-	Property
-	DateSold time.Time
+	Size          string
+	AgeOfProperty string
+	PriceHistory []struct {
+		Price    string
+		DateSole time.Time
+	}
+	Description string
+	Address     Address
+	NumBeds     string
+	NumBaths    string
+	NumCars     string
 }
-
-//TODO consider:
-// Infrastructure: water, sewerage, power, gas and telco – all publically accessible and highly relevant.
-// Upcoming developments planned future developments are going to play a big part in predicting the hot spots of the future, enabling algorithms to catch gentrification before it happens

@@ -1,11 +1,49 @@
 package dropbox
 
-type repo struct {}
+import (
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
+	"strings"
+	"unicode"
+	"path/filepath"
+	"github.com/golang/go/src/pkg/encoding/json"
+	"io"
+)
 
-func (repo) Create() error {
-	panic("implement me")
+type PropertyHistoryDataRepo struct {
+	token         string
+	dropboxClient client
 }
 
-func (repo) Add(interface{}) error {
-	panic("implement me")
+func (p PropertyHistoryDataRepo) Add(data data.PropertyHistoryData) error {
+	pr, pw := io.Pipe()
+	go func() {
+		defer pw.Close()
+		err := json.NewEncoder(pw).Encode(data)
+		if err != nil {
+			pw.CloseWithError(err)
+		}
+	}()
+
+	fileName := filepath.Join(
+		"/",
+		sanitizeAddress(data.Address.State),
+		sanitizeAddress(data.Address.Suburb),
+		sanitizeAddress(data.Address.AddressLine1),
+	)
+	_, err := p.dropboxClient.Upload(files.NewCommitInfo(fileName), pr)
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
+}
+
+func sanitizeAddress(address string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) || r == '-' {
+			return unicode.ToLower(r)
+		}
+		return '_'
+	}, address)
 }

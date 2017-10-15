@@ -37,12 +37,10 @@ var _ = Describe("Integration tests", func() {
 
 		By("writing a file in txn", func() {
 			propertyHistoryData := data.PropertyHistoryData{
-				Property: data.Property{
-					Address: data.Address{
-						AddressLine1: "123 fake street",
-						State:        "NSW",
-						Suburb:       "north sydney",
-					},
+				Address: data.Address{
+					AddressLine1: "123 fake street",
+					State:        "NSW",
+					Suburb:       "north sydney",
 				},
 			}
 			Expect(trainingDataRepo.Add(propertyHistoryData)).To(Succeed())

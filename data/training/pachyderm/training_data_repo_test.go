@@ -138,12 +138,10 @@ var _ = Describe("TrainingDataRepo", func() {
 
 		BeforeEach(func() {
 			propertyHistoryData = data.PropertyHistoryData{
-				Property: data.Property{
-					Address: data.Address{
-						AddressLine1: "1/123-124 fake street",
-						State:        "NSW",
-						Suburb:       "north sydney",
-					},
+				Address: data.Address{
+					AddressLine1: "1/123-124 fake street",
+					State:        "NSW",
+					Suburb:       "north sydney",
 				},
 			}
 

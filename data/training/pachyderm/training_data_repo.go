@@ -13,7 +13,7 @@ import (
 
 const training_data_repo_name = "training-data-properties"
 
-var _ training.Repo = TrainingDataRepo{}
+var _ training.TxnRepo = TrainingDataRepo{}
 
 type TrainingDataRepo struct {
 	client APIClient
