@@ -8,11 +8,22 @@ import (
 	"path/filepath"
 	"github.com/golang/go/src/pkg/encoding/json"
 	"io"
+	dropboxclient "github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 )
 
 type PropertyHistoryDataRepo struct {
-	token         string
 	dropboxClient client
+}
+
+func NewPropertyHistoryDataRepo(token string) *PropertyHistoryDataRepo {
+	config := dropboxclient.Config{
+		Token:    token,
+		LogLevel: dropboxclient.LogInfo,
+	}
+
+	return &PropertyHistoryDataRepo{
+		dropboxClient: files.New(config),
+	}
 }
 
 func (p PropertyHistoryDataRepo) Add(data data.PropertyHistoryData) error {
@@ -33,7 +44,7 @@ func (p PropertyHistoryDataRepo) Add(data data.PropertyHistoryData) error {
 	)
 	_, err := p.dropboxClient.Upload(files.NewCommitInfo(fileName), pr)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil

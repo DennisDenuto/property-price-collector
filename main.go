@@ -3,17 +3,24 @@ package main
 import "github.com/PuerkitoBio/fetchbot"
 import (
 	"fmt"
-	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 	log "github.com/Sirupsen/logrus"
-	pachdclient "github.com/pachyderm/pachyderm/src/client"
 	"os"
 	"strconv"
 	"time"
+	"github.com/DennisDenuto/property-price-collector/data/training/dropbox"
 )
 
 func main() {
 	log.SetLevel(log.DebugLevel)
+
+	var dropboxToken string
+	var found bool
+
+	if dropboxToken, found = os.LookupEnv("DROPBOX_TOKEN"); !found {
+		log.Error("missing DROPBOX_TOKEN ENV")
+		os.Exit(1)
+	}
 
 	mux := fetchbot.NewMux()
 
@@ -33,56 +40,18 @@ func main() {
 		queue.SendStringGet(seed)
 	}
 
-	client, err := getPachdClient()
-	if err != nil {
-		log.WithError(err).Error("unable to get pachd client")
-		panic(err)
-	}
-	repo := pachyderm.NewBatchTrainingDataRepo(
-		pachyderm.NewTrainingDataRepo(client),
-		1000,
-	)
-
-	err = repo.Create()
-	if err != nil {
-		log.WithError(err).Error("unable to create repo")
-		panic(err)
-	}
-
-	commitId, err := repo.StartTxn()
-	if err != nil {
-		log.WithError(err).Error("unable to start txn")
-		panic(err)
-	}
+	repo := dropbox.NewPropertyHistoryDataRepo(dropboxToken)
 
 	err = saveProperties(pphcFetcher, repo, queue)
 	if err != nil {
-		log.WithError(err).Error("saving properties returned an error. attempting to commit...")
+		log.WithError(err).Error("saving properties returned an error.")
+		os.Exit(1)
 	}
 
-	err = retryDuring(10*time.Minute, 10*time.Second, func() error {
-		err = repo.ForceCommit(commitId)
-		if err != nil {
-			log.WithError(err).Error("unable to commit txn")
-			return err
-		}
-
-		return nil
-	}, func() {
-		client, err := getPachdClient()
-		if err != nil {
-			repo = pachyderm.NewBatchTrainingDataRepo(pachyderm.NewTrainingDataRepo(client), 1000)
-		}
-	})
-
-	if err != nil {
-		log.WithError(err).Error("unable to finish txn")
-		panic(err)
-	}
 	log.Debug("exiting now")
 }
 
-func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *pachyderm.BatchTrainingDataRepo, queue *fetchbot.Queue) (err error) {
+func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *dropbox.PropertyHistoryDataRepo, queue *fetchbot.Queue) (error) {
 	for {
 		select {
 		case property, ok := <-pphcFetcher.GetProperties():
@@ -90,8 +59,8 @@ func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *pachyderm.Ba
 				log.Debug("no more properties to save. exiting")
 				return nil
 			}
-			err = retryDuring(10*time.Minute, 10*time.Second, func() error {
-				err = repo.Add(property)
+			err := retryDuring(10*time.Minute, 10*time.Second, func() error {
+				err := repo.Add(property)
 				if err != nil {
 					log.WithError(err).Error("adding property to repo errored")
 					return err
@@ -100,40 +69,20 @@ func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *pachyderm.Ba
 				log.Infof("%+#v", property)
 
 				return nil
-			}, func() {
-				client, err := getPachdClient()
-				if err != nil {
-					repo = pachyderm.NewBatchTrainingDataRepo(pachyderm.NewTrainingDataRepo(client), 1000)
-				}
 			})
 
 			if err != nil {
 				log.WithError(err).Error("unable to write property into datastore")
-				panic(err)
+				return err
 			}
 		case <-queue.Done():
-			log.Info("Finished")
+			log.Info("Finished: no more urls to fetch.")
 			pphcFetcher.Done()
 		}
 	}
 }
-func getPachdClient() (pachyderm.APIClient, error) {
-	host, foundHost := os.LookupEnv("PACHD_SERVICE_HOST")
-	port, foundPort := os.LookupEnv("PACHD_SERVICE_PORT")
 
-	if !foundHost || !foundPort {
-		return nil, fmt.Errorf("missing required env variable (PACHD_SERVICE_HOST|PACHD_SERVICE_PORT)")
-	}
-
-	client, err := pachdclient.NewFromAddress(fmt.Sprintf("%s:%s", host, port))
-	if err != nil {
-		log.WithError(err).Error("unable to connect to pachyderm")
-		return nil, err
-	}
-	return client, nil
-}
-
-func retryDuring(duration time.Duration, sleep time.Duration, callback func() error, attemptRepair func()) (err error) {
+func retryDuring(duration time.Duration, sleep time.Duration, callback func() error) (err error) {
 	t0 := time.Now()
 	i := 0
 	for {
@@ -152,6 +101,5 @@ func retryDuring(duration time.Duration, sleep time.Duration, callback func() er
 		time.Sleep(sleep)
 
 		log.WithError(err).Debug("retrying after error")
-		attemptRepair()
 	}
 }

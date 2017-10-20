@@ -7,6 +7,7 @@ import (
 	"github.com/DennisDenuto/property-price-collector/data"
 	"io/ioutil"
 	"encoding/json"
+	"github.com/pkg/errors"
 )
 
 var _ = Describe("TrainingRepo", func() {
@@ -46,5 +47,22 @@ var _ = Describe("TrainingRepo", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(contents).To(MatchJSON(propertyHistoryDataJson))
+	})
+
+	Context("when dropbox fails to upload", func() {
+		It("should return an error", func() {
+			propertyHistoryData := data.PropertyHistoryData{
+				Address: data.Address{
+					AddressLine1: "1/123-124 fake street",
+					State:        "NSW",
+					Suburb:       "north sydney",
+				},
+			}
+
+			fakeClient.UploadReturns(nil, errors.New("some dropbox error"))
+			err := repo.Add(propertyHistoryData)
+			Expect(err).To(HaveOccurred())
+			Expect(err).To(MatchError("some dropbox error"))
+		})
 	})
 })
