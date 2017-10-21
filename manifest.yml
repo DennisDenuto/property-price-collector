@@ -1,0 +1,10 @@
+---
+applications:
+  - name: property-price-collector
+    memory: 1024M
+    disk_quota: 1024M
+    buildpack: go_buildpack
+    env:
+      GOPACKAGENAME: github.com/DennisDenuto/property-price-collector
+      START_POSTCODE: 2000
+      END_POSTCODE: 2155

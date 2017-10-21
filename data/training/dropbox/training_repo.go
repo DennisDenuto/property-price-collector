@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unicode"
 	"path/filepath"
-	"github.com/golang/go/src/pkg/encoding/json"
+	"encoding/json"
 	"io"
 	dropboxclient "github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 )
@@ -42,7 +42,10 @@ func (p PropertyHistoryDataRepo) Add(data data.PropertyHistoryData) error {
 		sanitizeAddress(data.Address.Suburb),
 		sanitizeAddress(data.Address.AddressLine1),
 	)
-	_, err := p.dropboxClient.Upload(files.NewCommitInfo(fileName), pr)
+	commitInfo := files.NewCommitInfo(fileName)
+	commitInfo.Mode = &files.WriteMode{Tagged: dropboxclient.Tagged{files.WriteModeOverwrite}}
+
+	_, err := p.dropboxClient.Upload(commitInfo, pr)
 	if err != nil {
 		return err
 	}

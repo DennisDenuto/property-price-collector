@@ -1,0 +1,1 @@
+process: property-price-collector

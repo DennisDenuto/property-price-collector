@@ -51,6 +51,7 @@ func main() {
 	log.Debug("exiting now")
 }
 
+
 func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *dropbox.PropertyHistoryDataRepo, queue *fetchbot.Queue) (error) {
 	for {
 		select {
@@ -59,7 +60,7 @@ func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *dropbox.Prop
 				log.Debug("no more properties to save. exiting")
 				return nil
 			}
-			err := retryDuring(10*time.Minute, 10*time.Second, func() error {
+			err := retryDuring(1*time.Minute, 10*time.Second, func() error {
 				err := repo.Add(property)
 				if err != nil {
 					log.WithError(err).Error("adding property to repo errored")
@@ -72,8 +73,7 @@ func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *dropbox.Prop
 			})
 
 			if err != nil {
-				log.WithError(err).Error("unable to write property into datastore")
-				return err
+				log.WithError(err).Error("unable to write property into datastore (SKIPPING property)")
 			}
 		case <-queue.Done():
 			log.Info("Finished: no more urls to fetch.")
