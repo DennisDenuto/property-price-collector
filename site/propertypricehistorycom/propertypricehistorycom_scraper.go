@@ -16,10 +16,25 @@ import (
 //https://www.propertypricehistory.com/sold/list/NSW/<<POSTCODE>>
 //2000 - 2594
 
-func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int) PropertyPriceHistoryCom {
+//go:generate counterfeiter . PostcodeSuburbLookup
+type PostcodeSuburbLookup interface {
+	Load() error
+	GetSuburb(int) ([]string, bool)
+}
+
+func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int, postcodeSuburbLookup PostcodeSuburbLookup) PropertyPriceHistoryCom {
 	var seedUrls []string = make([]string, maxPostcode-minPostcode)
+	err := postcodeSuburbLookup.Load()
+	if err != nil {
+		panic(err)
+	}
+
 	for postcode := minPostcode; postcode <= maxPostcode; postcode++ {
-		seedUrls = append(seedUrls, getListUri(host, postcode))
+		suburbs, _ := postcodeSuburbLookup.GetSuburb(postcode)
+
+		for _, suburb := range suburbs {
+			seedUrls = append(seedUrls, getListUri(host, postcode, url.QueryEscape(suburb)))
+		}
 	}
 
 	return PropertyPriceHistoryCom{
@@ -29,8 +44,8 @@ func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int) P
 	}
 }
 
-func getListUri(host string, postcode int) string {
-	return fmt.Sprintf("http://%s/sold/list/NSW/%d", host, postcode)
+func getListUri(host string, postcode int, suburb string) string {
+	return fmt.Sprintf("http://%s/sold/list/NSW/%d/%s", host, postcode, suburb)
 }
 
 type PropertyPriceHistoryCom struct {

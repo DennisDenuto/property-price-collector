@@ -1,4 +1,10 @@
-memo = "ba0125247c99ef3416c5a4d76b2f2c030d7307370bd6bf3354038ae7382eda1d"
+memo = "c242e366c649d1845c3819068919a670ed46dc682f6ffe37e8d45780e26ff30f"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/DennisDenuto/ozdata"
+  packages = ["ozdata"]
+  revision = "2df71e008d933ac6b694153388c04431634c03a1"
 
 [[projects]]
   name = "github.com/PuerkitoBio/fetchbot"

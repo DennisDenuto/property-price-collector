@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 	"github.com/DennisDenuto/property-price-collector/data/training/dropbox"
+	"github.com/DennisDenuto/property-price-collector/site"
 )
 
 func main() {
@@ -26,9 +27,17 @@ func main() {
 
 	//2000 2155
 	minPostcode, err := strconv.Atoi(os.Getenv("START_POSTCODE"))
+	if err != nil {
+		log.Error("missing START_POSTCODE ENV")
+		os.Exit(1)
+	}
 	maxPostcode, err := strconv.Atoi(os.Getenv("END_POSTCODE"))
+	if err != nil {
+		log.Error("missing END_POSTCODE ENV")
+		os.Exit(1)
+	}
 
-	pphcFetcher := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", minPostcode, maxPostcode)
+	pphcFetcher := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", minPostcode, maxPostcode, &site.PostcodeSuburbStore{})
 	pphcFetcher.SetupMux(mux)
 
 	fetcher := fetchbot.New(mux)

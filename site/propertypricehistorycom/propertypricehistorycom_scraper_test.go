@@ -11,6 +11,7 @@ import (
 	"github.com/onsi/gomega/ghttp"
 	"net/url"
 	"time"
+	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom/propertypricehistorycomfakes"
 )
 
 var _ = Describe("HistoricalPropertyScraper", func() {
@@ -26,7 +27,10 @@ var _ = Describe("HistoricalPropertyScraper", func() {
 		urlParsed, err := url.Parse(server.URL())
 		Expect(err).ToNot(HaveOccurred())
 
-		scraper = NewPropertyPriceHistoryCom(fmt.Sprintf("localhost:%s", urlParsed.Port()), 2155, 2155)
+		lookup := &propertypricehistorycomfakes.FakePostcodeSuburbLookup{}
+		lookup.GetSuburbReturns([]string{"Kellyville Ridge"}, true)
+
+		scraper = NewPropertyPriceHistoryCom(fmt.Sprintf("localhost:%s", urlParsed.Port()), 2155, 2155, lookup)
 		scraper.SetupMux(testMux)
 
 		fetcher = fetchbot.New(testMux)
@@ -50,7 +54,7 @@ Disallow: /deny`,
 					),
 				),
 				ghttp.CombineHandlers(
-					ghttp.VerifyRequest("GET", "/sold/list/NSW/2155"),
+					ghttp.VerifyRequest("GET", "/sold/list/NSW/2155/Kellyville+Ridge"),
 					ghttp.RespondWith(200, PropertyPriceHistory_list_nsw_2155),
 				),
 				ghttp.CombineHandlers(
