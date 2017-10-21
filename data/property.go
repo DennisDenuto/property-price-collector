@@ -40,7 +40,7 @@ type PropertyHistoryData struct {
 	Price         string
 	Size          string
 	AgeOfProperty string
-	PriceHistory []struct {
+	PriceHistory  []struct {
 		Price    string
 		DateSole time.Time
 	}

@@ -1,10 +1,10 @@
 package pachyderm
 
 import (
-	"github.com/pachyderm/pachyderm/src/client/pfs"
-	"github.com/pachyderm/pachyderm/src/client"
-	"io"
 	_ "github.com/gogo/protobuf/gogoproto"
+	"github.com/pachyderm/pachyderm/src/client"
+	"github.com/pachyderm/pachyderm/src/client/pfs"
+	"io"
 )
 
 //go:generate counterfeiter . APIClient

@@ -3,13 +3,13 @@ package main
 import "github.com/PuerkitoBio/fetchbot"
 import (
 	"fmt"
+	"github.com/DennisDenuto/property-price-collector/data/training/dropbox"
+	"github.com/DennisDenuto/property-price-collector/site"
 	pphc "github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 	log "github.com/Sirupsen/logrus"
 	"os"
 	"strconv"
 	"time"
-	"github.com/DennisDenuto/property-price-collector/data/training/dropbox"
-	"github.com/DennisDenuto/property-price-collector/site"
 )
 
 func main() {
@@ -60,8 +60,7 @@ func main() {
 	log.Debug("exiting now")
 }
 
-
-func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *dropbox.PropertyHistoryDataRepo, queue *fetchbot.Queue) (error) {
+func saveProperties(pphcFetcher pphc.PropertyPriceHistoryCom, repo *dropbox.PropertyHistoryDataRepo, queue *fetchbot.Queue) error {
 	for {
 		select {
 		case property, ok := <-pphcFetcher.GetProperties():

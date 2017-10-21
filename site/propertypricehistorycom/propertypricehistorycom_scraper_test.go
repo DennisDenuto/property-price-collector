@@ -5,13 +5,13 @@ import (
 
 	"fmt"
 	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom/propertypricehistorycomfakes"
 	"github.com/PuerkitoBio/fetchbot"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 	"net/url"
 	"time"
-	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom/propertypricehistorycomfakes"
 )
 
 var _ = Describe("HistoricalPropertyScraper", func() {

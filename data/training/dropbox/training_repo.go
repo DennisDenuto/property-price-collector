@@ -1,14 +1,14 @@
 package dropbox
 
 import (
+	"encoding/json"
 	"github.com/DennisDenuto/property-price-collector/data"
+	dropboxclient "github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
+	"io"
+	"path/filepath"
 	"strings"
 	"unicode"
-	"path/filepath"
-	"encoding/json"
-	"io"
-	dropboxclient "github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 )
 
 type PropertyHistoryDataRepo struct {

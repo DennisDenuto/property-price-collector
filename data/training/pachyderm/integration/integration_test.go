@@ -4,10 +4,10 @@ import (
 	. "github.com/DennisDenuto/property-price-collector/data/training"
 
 	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pachyderm/pachyderm/src/client"
-	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 )
 
 var _ = Describe("Integration tests", func() {

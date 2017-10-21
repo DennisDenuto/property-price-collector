@@ -29,4 +29,3 @@ func (pss *PostcodeSuburbStore) GetSuburb(postcode int) ([]string, bool) {
 
 	return suburbsForPostcode, true
 }
-

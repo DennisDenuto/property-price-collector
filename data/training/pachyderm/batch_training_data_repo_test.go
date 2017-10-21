@@ -4,8 +4,8 @@ import (
 	"github.com/DennisDenuto/property-price-collector/data/training"
 
 	"encoding/json"
-	. "github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 	"github.com/DennisDenuto/property-price-collector/data"
+	. "github.com/DennisDenuto/property-price-collector/data/training/pachyderm"
 	"github.com/DennisDenuto/property-price-collector/data/training/pachyderm/pachydermfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

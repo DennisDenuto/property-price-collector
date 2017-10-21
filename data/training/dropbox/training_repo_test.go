@@ -1,13 +1,13 @@
 package dropbox
 
 import (
+	"encoding/json"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/data/training/dropbox/dropboxfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/DennisDenuto/property-price-collector/data/training/dropbox/dropboxfakes"
-	"github.com/DennisDenuto/property-price-collector/data"
-	"io/ioutil"
-	"encoding/json"
 	"github.com/pkg/errors"
+	"io/ioutil"
 )
 
 var _ = Describe("TrainingRepo", func() {
@@ -19,7 +19,6 @@ var _ = Describe("TrainingRepo", func() {
 		fakeClient = &dropboxfakes.FakeClient{}
 
 		repo = PropertyHistoryDataRepo{
-			token:         "",
 			dropboxClient: fakeClient,
 		}
 	})
