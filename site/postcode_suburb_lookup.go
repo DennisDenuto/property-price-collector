@@ -16,15 +16,24 @@ func (pss *PostcodeSuburbStore) Load() error {
 	return nil
 }
 
-func (pss *PostcodeSuburbStore) GetSuburb(postcode int) ([]string, bool) {
-	var suburbsForPostcode []string
+type Suburb struct {
+	Name  string
+	State string
+}
+
+func (pss *PostcodeSuburbStore) GetSuburb(postcode int) ([]Suburb, bool) {
+	var suburbsForPostcode []Suburb
 	suburbs, found := pss.suburbs.Suburbs[int64(postcode)]
 
 	if !found {
 		return nil, false
 	}
 	for _, suburb := range suburbs {
-		suburbsForPostcode = append(suburbsForPostcode, suburb.Name)
+
+		suburbsForPostcode = append(suburbsForPostcode, Suburb{
+			Name:  suburb.Name,
+			State: suburb.State.Code,
+		})
 	}
 
 	return suburbsForPostcode, true

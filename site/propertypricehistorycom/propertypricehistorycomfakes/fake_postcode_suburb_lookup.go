@@ -4,6 +4,7 @@ package propertypricehistorycomfakes
 import (
 	"sync"
 
+	"github.com/DennisDenuto/property-price-collector/site"
 	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
 )
 
@@ -14,13 +15,13 @@ type FakePostcodeSuburbLookup struct {
 	loadReturns     struct {
 		result1 error
 	}
-	GetSuburbStub        func(int) ([]string, bool)
+	GetSuburbStub        func(int) ([]site.Suburb, bool)
 	getSuburbMutex       sync.RWMutex
 	getSuburbArgsForCall []struct {
 		arg1 int
 	}
 	getSuburbReturns struct {
-		result1 []string
+		result1 []site.Suburb
 		result2 bool
 	}
 	invocations      map[string][][]interface{}
@@ -52,7 +53,7 @@ func (fake *FakePostcodeSuburbLookup) LoadReturns(result1 error) {
 	}{result1}
 }
 
-func (fake *FakePostcodeSuburbLookup) GetSuburb(arg1 int) ([]string, bool) {
+func (fake *FakePostcodeSuburbLookup) GetSuburb(arg1 int) ([]site.Suburb, bool) {
 	fake.getSuburbMutex.Lock()
 	fake.getSuburbArgsForCall = append(fake.getSuburbArgsForCall, struct {
 		arg1 int
@@ -78,10 +79,10 @@ func (fake *FakePostcodeSuburbLookup) GetSuburbArgsForCall(i int) int {
 	return fake.getSuburbArgsForCall[i].arg1
 }
 
-func (fake *FakePostcodeSuburbLookup) GetSuburbReturns(result1 []string, result2 bool) {
+func (fake *FakePostcodeSuburbLookup) GetSuburbReturns(result1 []site.Suburb, result2 bool) {
 	fake.GetSuburbStub = nil
 	fake.getSuburbReturns = struct {
-		result1 []string
+		result1 []site.Suburb
 		result2 bool
 	}{result1, result2}
 }

@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/site"
 	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom/propertypricehistorycomfakes"
 	"github.com/PuerkitoBio/fetchbot"
 	. "github.com/onsi/ginkgo"
@@ -28,7 +29,9 @@ var _ = Describe("HistoricalPropertyScraper", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		lookup := &propertypricehistorycomfakes.FakePostcodeSuburbLookup{}
-		lookup.GetSuburbReturns([]string{"Kellyville Ridge"}, true)
+		lookup.GetSuburbReturns([]site.Suburb{
+			{Name: "Kellyville Ridge", State: "NSW"},
+		}, true)
 
 		scraper = NewPropertyPriceHistoryCom(fmt.Sprintf("localhost:%s", urlParsed.Port()), 2155, 2155, lookup)
 		scraper.SetupMux(testMux)

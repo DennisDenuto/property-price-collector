@@ -3,6 +3,7 @@ package propertypricehistorycom
 import (
 	"fmt"
 	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/site"
 	"github.com/PuerkitoBio/fetchbot"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/Sirupsen/logrus"
@@ -19,7 +20,7 @@ import (
 //go:generate counterfeiter . PostcodeSuburbLookup
 type PostcodeSuburbLookup interface {
 	Load() error
-	GetSuburb(int) ([]string, bool)
+	GetSuburb(int) ([]site.Suburb, bool)
 }
 
 func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int, postcodeSuburbLookup PostcodeSuburbLookup) PropertyPriceHistoryCom {
@@ -33,7 +34,7 @@ func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int, p
 		suburbs, _ := postcodeSuburbLookup.GetSuburb(postcode)
 
 		for _, suburb := range suburbs {
-			seedUrls = append(seedUrls, getListUri(host, postcode, url.QueryEscape(suburb)))
+			seedUrls = append(seedUrls, getListUri(host, suburb.State, postcode, url.QueryEscape(suburb.Name)))
 		}
 	}
 
@@ -44,7 +45,7 @@ func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int, p
 	}
 }
 
-func getListUri(host string, postcode int, suburb string) string {
+func getListUri(host string, state string, postcode int, suburb string) string {
 	return fmt.Sprintf("http://%s/sold/list/NSW/%d/%s", host, postcode, suburb)
 }
 
