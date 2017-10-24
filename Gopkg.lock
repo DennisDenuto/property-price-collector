@@ -1,10 +1,4 @@
-memo = "c242e366c649d1845c3819068919a670ed46dc682f6ffe37e8d45780e26ff30f"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/DennisDenuto/ozdata"
-  packages = ["ozdata"]
-  revision = "2df71e008d933ac6b694153388c04431634c03a1"
+memo = "1af4c4457f2fcd8bf809298cb226be1fd8db8dd06ced06895e8b94d04df55e45"
 
 [[projects]]
   name = "github.com/PuerkitoBio/fetchbot"
@@ -89,6 +83,12 @@ memo = "c242e366c649d1845c3819068919a670ed46dc682f6ffe37e8d45780e26ff30f"
   name = "github.com/temoto/robotstxt-go"
   packages = ["."]
   revision = "9e4646fa705336d5b2fa9dddfafbe0a1a965acd7"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/tomjowitt/ozdata"
+  packages = ["ozdata"]
+  revision = "4b54ad105fc7bc410fa6ea2f9c3a35aca4c39509"
 
 [[projects]]
   branch = "master"

@@ -1,6 +1,6 @@
 package site
 
-import "github.com/DennisDenuto/ozdata/ozdata"
+import "github.com/tomjowitt/ozdata/ozdata"
 
 type PostcodeSuburbStore struct {
 	suburbs ozdata.Suburbs
