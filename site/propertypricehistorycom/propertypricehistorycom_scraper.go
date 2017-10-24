@@ -46,7 +46,7 @@ func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int, p
 }
 
 func getListUri(host string, state string, postcode int, suburb string) string {
-	return fmt.Sprintf("http://%s/sold/list/NSW/%d/%s", host, postcode, suburb)
+	return fmt.Sprintf("http://%s/sold/list/%s/%d/%s", host, state, postcode, suburb)
 }
 
 type PropertyPriceHistoryCom struct {
