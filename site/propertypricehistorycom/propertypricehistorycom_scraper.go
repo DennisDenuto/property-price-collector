@@ -152,7 +152,7 @@ func parsePostcodeAndSuburb(val string) (postcode string, suburb string) {
 }
 
 func getStateFromUrl(addressSelection *goquery.Selection) string {
-	compile, err := regexp.Compile("/(NSW|QLD|TAS|VIC|SA|WA)/")
+	compile, err := regexp.Compile("(?i)/(NSW|QLD|TAS|VIC|SA|WA)/")
 	if err != nil {
 		return ""
 	}
