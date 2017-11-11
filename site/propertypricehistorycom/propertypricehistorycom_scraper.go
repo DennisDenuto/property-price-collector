@@ -24,7 +24,7 @@ type PostcodeSuburbLookup interface {
 }
 
 func NewPropertyPriceHistoryCom(host string, minPostcode int, maxPostcode int, postcodeSuburbLookup PostcodeSuburbLookup) PropertyPriceHistoryCom {
-	var seedUrls []string = make([]string, maxPostcode-minPostcode)
+	var seedUrls = make([]string, maxPostcode-minPostcode)
 	err := postcodeSuburbLookup.Load()
 	if err != nil {
 		panic(err)

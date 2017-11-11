@@ -1,0 +1,22 @@
+{
+  "Type": "apartment",
+  "DateSold": "2013-03-15T00:00:00Z",
+  "Price": "N/A",
+  "Size": "",
+  "AgeOfProperty": "",
+  "PriceHistory": null,
+  "Description": "",
+  "Address": {
+    "AddressLine1": "0 Figtree Ave Abbotsford 2046",
+    "PostCode": "2046",
+    "Suburb": "Abbotsford",
+    "State": "NSW",
+    "LonLat": {
+      "Lon": "151.1307700",
+      "Lat": "-33.8496630"
+    }
+  },
+  "NumBeds": "3",
+  "NumBaths": "2",
+  "NumCars": "2"
+}

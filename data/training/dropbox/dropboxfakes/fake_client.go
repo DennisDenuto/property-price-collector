@@ -19,6 +19,34 @@ type FakeClient struct {
 		result1 *files.FileMetadata
 		result2 error
 	}
+	DownloadStub        func(arg *files.DownloadArg) (res *files.FileMetadata, content io.ReadCloser, err error)
+	downloadMutex       sync.RWMutex
+	downloadArgsForCall []struct {
+		arg *files.DownloadArg
+	}
+	downloadReturns struct {
+		result1 *files.FileMetadata
+		result2 io.ReadCloser
+		result3 error
+	}
+	ListFolderStub        func(arg *files.ListFolderArg) (res *files.ListFolderResult, err error)
+	listFolderMutex       sync.RWMutex
+	listFolderArgsForCall []struct {
+		arg *files.ListFolderArg
+	}
+	listFolderReturns struct {
+		result1 *files.ListFolderResult
+		result2 error
+	}
+	ListFolderContinueStub        func(arg *files.ListFolderContinueArg) (res *files.ListFolderResult, err error)
+	listFolderContinueMutex       sync.RWMutex
+	listFolderContinueArgsForCall []struct {
+		arg *files.ListFolderContinueArg
+	}
+	listFolderContinueReturns struct {
+		result1 *files.ListFolderResult
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -58,11 +86,120 @@ func (fake *FakeClient) UploadReturns(result1 *files.FileMetadata, result2 error
 	}{result1, result2}
 }
 
+func (fake *FakeClient) Download(arg *files.DownloadArg) (res *files.FileMetadata, content io.ReadCloser, err error) {
+	fake.downloadMutex.Lock()
+	fake.downloadArgsForCall = append(fake.downloadArgsForCall, struct {
+		arg *files.DownloadArg
+	}{arg})
+	fake.recordInvocation("Download", []interface{}{arg})
+	fake.downloadMutex.Unlock()
+	if fake.DownloadStub != nil {
+		return fake.DownloadStub(arg)
+	} else {
+		return fake.downloadReturns.result1, fake.downloadReturns.result2, fake.downloadReturns.result3
+	}
+}
+
+func (fake *FakeClient) DownloadCallCount() int {
+	fake.downloadMutex.RLock()
+	defer fake.downloadMutex.RUnlock()
+	return len(fake.downloadArgsForCall)
+}
+
+func (fake *FakeClient) DownloadArgsForCall(i int) *files.DownloadArg {
+	fake.downloadMutex.RLock()
+	defer fake.downloadMutex.RUnlock()
+	return fake.downloadArgsForCall[i].arg
+}
+
+func (fake *FakeClient) DownloadReturns(result1 *files.FileMetadata, result2 io.ReadCloser, result3 error) {
+	fake.DownloadStub = nil
+	fake.downloadReturns = struct {
+		result1 *files.FileMetadata
+		result2 io.ReadCloser
+		result3 error
+	}{result1, result2, result3}
+}
+
+func (fake *FakeClient) ListFolder(arg *files.ListFolderArg) (res *files.ListFolderResult, err error) {
+	fake.listFolderMutex.Lock()
+	fake.listFolderArgsForCall = append(fake.listFolderArgsForCall, struct {
+		arg *files.ListFolderArg
+	}{arg})
+	fake.recordInvocation("ListFolder", []interface{}{arg})
+	fake.listFolderMutex.Unlock()
+	if fake.ListFolderStub != nil {
+		return fake.ListFolderStub(arg)
+	} else {
+		return fake.listFolderReturns.result1, fake.listFolderReturns.result2
+	}
+}
+
+func (fake *FakeClient) ListFolderCallCount() int {
+	fake.listFolderMutex.RLock()
+	defer fake.listFolderMutex.RUnlock()
+	return len(fake.listFolderArgsForCall)
+}
+
+func (fake *FakeClient) ListFolderArgsForCall(i int) *files.ListFolderArg {
+	fake.listFolderMutex.RLock()
+	defer fake.listFolderMutex.RUnlock()
+	return fake.listFolderArgsForCall[i].arg
+}
+
+func (fake *FakeClient) ListFolderReturns(result1 *files.ListFolderResult, result2 error) {
+	fake.ListFolderStub = nil
+	fake.listFolderReturns = struct {
+		result1 *files.ListFolderResult
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeClient) ListFolderContinue(arg *files.ListFolderContinueArg) (res *files.ListFolderResult, err error) {
+	fake.listFolderContinueMutex.Lock()
+	fake.listFolderContinueArgsForCall = append(fake.listFolderContinueArgsForCall, struct {
+		arg *files.ListFolderContinueArg
+	}{arg})
+	fake.recordInvocation("ListFolderContinue", []interface{}{arg})
+	fake.listFolderContinueMutex.Unlock()
+	if fake.ListFolderContinueStub != nil {
+		return fake.ListFolderContinueStub(arg)
+	} else {
+		return fake.listFolderContinueReturns.result1, fake.listFolderContinueReturns.result2
+	}
+}
+
+func (fake *FakeClient) ListFolderContinueCallCount() int {
+	fake.listFolderContinueMutex.RLock()
+	defer fake.listFolderContinueMutex.RUnlock()
+	return len(fake.listFolderContinueArgsForCall)
+}
+
+func (fake *FakeClient) ListFolderContinueArgsForCall(i int) *files.ListFolderContinueArg {
+	fake.listFolderContinueMutex.RLock()
+	defer fake.listFolderContinueMutex.RUnlock()
+	return fake.listFolderContinueArgsForCall[i].arg
+}
+
+func (fake *FakeClient) ListFolderContinueReturns(result1 *files.ListFolderResult, result2 error) {
+	fake.ListFolderContinueStub = nil
+	fake.listFolderContinueReturns = struct {
+		result1 *files.ListFolderResult
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.uploadMutex.RLock()
 	defer fake.uploadMutex.RUnlock()
+	fake.downloadMutex.RLock()
+	defer fake.downloadMutex.RUnlock()
+	fake.listFolderMutex.RLock()
+	defer fake.listFolderMutex.RUnlock()
+	fake.listFolderContinueMutex.RLock()
+	defer fake.listFolderContinueMutex.RUnlock()
 	return fake.invocations
 }
 

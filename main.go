@@ -37,14 +37,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	pphcFetcher := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", minPostcode, maxPostcode, &site.PostcodeSuburbStore{})
-	pphcFetcher.SetupMux(mux)
-
 	fetcher := fetchbot.New(mux)
 	fetcher.AutoClose = true
 
 	queue := fetcher.Start()
 
+	pphcFetcher := pphc.NewPropertyPriceHistoryCom("propertypricehistory.com", minPostcode, maxPostcode, &site.PostcodeSuburbStore{})
+	pphcFetcher.SetupMux(mux)
 	for _, seed := range pphcFetcher.SeedUrls {
 		queue.SendStringGet(seed)
 	}

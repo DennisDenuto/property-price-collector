@@ -4,7 +4,8 @@ import "github.com/DennisDenuto/property-price-collector/data"
 
 //go:generate counterfeiter . PropertyHistoryRepo
 type PropertyHistoryRepo interface {
-	Add(data data.PropertyHistoryData) error
+	Add(data.PropertyHistoryData) error
+	List(state, suburb string) (<-chan *data.PropertyHistoryData, <-chan error)
 }
 
 //go:generate counterfeiter . TxnRepo

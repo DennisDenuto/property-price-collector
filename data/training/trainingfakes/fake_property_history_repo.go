@@ -9,27 +9,37 @@ import (
 )
 
 type FakePropertyHistoryRepo struct {
-	AddStub        func(data data.PropertyHistoryData) error
+	AddStub        func(data.PropertyHistoryData) error
 	addMutex       sync.RWMutex
 	addArgsForCall []struct {
-		data data.PropertyHistoryData
+		arg1 data.PropertyHistoryData
 	}
 	addReturns struct {
 		result1 error
+	}
+	ListStub        func(state, suburb string) (<-chan *data.PropertyHistoryData, <-chan error)
+	listMutex       sync.RWMutex
+	listArgsForCall []struct {
+		state  string
+		suburb string
+	}
+	listReturns struct {
+		result1 <-chan *data.PropertyHistoryData
+		result2 <-chan error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakePropertyHistoryRepo) Add(data data.PropertyHistoryData) error {
+func (fake *FakePropertyHistoryRepo) Add(arg1 data.PropertyHistoryData) error {
 	fake.addMutex.Lock()
 	fake.addArgsForCall = append(fake.addArgsForCall, struct {
-		data data.PropertyHistoryData
-	}{data})
-	fake.recordInvocation("Add", []interface{}{data})
+		arg1 data.PropertyHistoryData
+	}{arg1})
+	fake.recordInvocation("Add", []interface{}{arg1})
 	fake.addMutex.Unlock()
 	if fake.AddStub != nil {
-		return fake.AddStub(data)
+		return fake.AddStub(arg1)
 	} else {
 		return fake.addReturns.result1
 	}
@@ -44,7 +54,7 @@ func (fake *FakePropertyHistoryRepo) AddCallCount() int {
 func (fake *FakePropertyHistoryRepo) AddArgsForCall(i int) data.PropertyHistoryData {
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
-	return fake.addArgsForCall[i].data
+	return fake.addArgsForCall[i].arg1
 }
 
 func (fake *FakePropertyHistoryRepo) AddReturns(result1 error) {
@@ -54,11 +64,48 @@ func (fake *FakePropertyHistoryRepo) AddReturns(result1 error) {
 	}{result1}
 }
 
+func (fake *FakePropertyHistoryRepo) List(state string, suburb string) (<-chan *data.PropertyHistoryData, <-chan error) {
+	fake.listMutex.Lock()
+	fake.listArgsForCall = append(fake.listArgsForCall, struct {
+		state  string
+		suburb string
+	}{state, suburb})
+	fake.recordInvocation("List", []interface{}{state, suburb})
+	fake.listMutex.Unlock()
+	if fake.ListStub != nil {
+		return fake.ListStub(state, suburb)
+	} else {
+		return fake.listReturns.result1, fake.listReturns.result2
+	}
+}
+
+func (fake *FakePropertyHistoryRepo) ListCallCount() int {
+	fake.listMutex.RLock()
+	defer fake.listMutex.RUnlock()
+	return len(fake.listArgsForCall)
+}
+
+func (fake *FakePropertyHistoryRepo) ListArgsForCall(i int) (string, string) {
+	fake.listMutex.RLock()
+	defer fake.listMutex.RUnlock()
+	return fake.listArgsForCall[i].state, fake.listArgsForCall[i].suburb
+}
+
+func (fake *FakePropertyHistoryRepo) ListReturns(result1 <-chan *data.PropertyHistoryData, result2 <-chan error) {
+	fake.ListStub = nil
+	fake.listReturns = struct {
+		result1 <-chan *data.PropertyHistoryData
+		result2 <-chan error
+	}{result1, result2}
+}
+
 func (fake *FakePropertyHistoryRepo) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.addMutex.RLock()
 	defer fake.addMutex.RUnlock()
+	fake.listMutex.RLock()
+	defer fake.listMutex.RUnlock()
 	return fake.invocations
 }
 
