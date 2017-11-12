@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"github.com/DennisDenuto/property-price-collector/data"
 	"github.com/DennisDenuto/property-price-collector/data/training/dropbox/dropboxfakes"
+	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pkg/errors"
-	"io/ioutil"
-	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
-	"os"
 	"io"
+	"io/ioutil"
+	"os"
 )
 
 var _ = Describe("TrainingRepo", func() {
@@ -97,7 +97,7 @@ var _ = Describe("TrainingRepo", func() {
 				HasMore: false,
 			}, nil)
 
-			fakeClient.DownloadStub = func(arg *files.DownloadArg) (res *files.FileMetadata, content io.ReadCloser, err error){
+			fakeClient.DownloadStub = func(arg *files.DownloadArg) (res *files.FileMetadata, content io.ReadCloser, err error) {
 				return nil, getTestDropboxAddressFile(), nil
 			}
 

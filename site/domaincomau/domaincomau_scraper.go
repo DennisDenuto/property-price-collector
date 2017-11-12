@@ -1,25 +1,25 @@
 package domaincomau
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/DennisDenuto/property-price-collector/data"
-	"github.com/PuerkitoBio/fetchbot"
-	"net/http"
-	"github.com/Sirupsen/logrus"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
+	"github.com/DennisDenuto/property-price-collector/data/training"
 	"github.com/DennisDenuto/property-price-collector/data/training/dropbox"
+	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom"
+	"github.com/PuerkitoBio/fetchbot"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/Sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/robertkrimen/otto"
+	"net/http"
 	"strings"
 	"unicode"
-	"fmt"
-	"github.com/pkg/errors"
-	"github.com/DennisDenuto/property-price-collector/data/training"
-	"github.com/robertkrimen/otto"
-	"encoding/json"
 )
 
-type DomainComAu struct {
+type DomainComAuFetcher struct {
 	propertyHistoryDataRepo    *dropbox.PropertyHistoryDataRepo
-	DomainComAuPropertyChannel chan *DomainComAuPropertyWrapper
+	DomainComAuPropertyChannel chan *data.DomainComAuPropertyWrapper
 	Seeds                      <-chan string
 }
 
@@ -27,7 +27,7 @@ func NewDomainComAu(host string,
 	propertyHistoryDataRepo training.PropertyHistoryRepo,
 	minPostcode int,
 	maxPostcode int,
-	postcodeSuburbLookup propertypricehistorycom.PostcodeSuburbLookup) DomainComAu {
+	postcodeSuburbLookup propertypricehistorycom.PostcodeSuburbLookup) DomainComAuFetcher {
 	seeds := make(chan string, 100)
 
 	go func() {
@@ -47,9 +47,9 @@ func NewDomainComAu(host string,
 		}
 	}()
 
-	return DomainComAu{
-		DomainComAuPropertyChannel: make(chan *DomainComAuPropertyWrapper, 100),
-		Seeds:                      seeds,
+	return DomainComAuFetcher{
+		DomainComAuPropertyChannel: make(chan *data.DomainComAuPropertyWrapper, 100),
+		Seeds: seeds,
 	}
 }
 
@@ -75,11 +75,11 @@ func addAddressToCrawler(seedChan chan<- string, host string, historyDataChan <-
 	}
 }
 
-func (d DomainComAu) SetupMux(mux *fetchbot.Mux) {
+func (d DomainComAuFetcher) SetupMux(mux *fetchbot.Mux) {
 	mux.Response().Path("/property-profile").Handler(historicalPropertyList(d.DomainComAuPropertyChannel))
 }
 
-func historicalPropertyList(historyData chan *DomainComAuPropertyWrapper) fetchbot.Handler {
+func historicalPropertyList(historyData chan *data.DomainComAuPropertyWrapper) fetchbot.Handler {
 	return fetchbot.HandlerFunc(func(ctx *fetchbot.Context, response *http.Response, err error) {
 		logrus.Debugf("processing host %s", response.Request.URL.String())
 
@@ -106,7 +106,7 @@ func historicalPropertyList(historyData chan *DomainComAuPropertyWrapper) fetchb
 				}
 
 				propertyString := domainComAuJsonWrapper.String()
-				domainComAuWrapper := &DomainComAuPropertyWrapper{}
+				domainComAuWrapper := &data.DomainComAuPropertyWrapper{}
 				err = json.Unmarshal([]byte(propertyString), domainComAuWrapper)
 
 				if err != nil {
@@ -134,10 +134,10 @@ func sanitizeAddress(address string) string {
 	}, address)
 }
 
-func (d DomainComAu) GetProperties() <-chan *DomainComAuPropertyWrapper {
+func (d DomainComAuFetcher) GetProperties() <-chan *data.DomainComAuPropertyWrapper {
 	return d.DomainComAuPropertyChannel
 }
 
-func (d DomainComAu) Done() {
+func (d DomainComAuFetcher) Done() {
 	close(d.DomainComAuPropertyChannel)
 }

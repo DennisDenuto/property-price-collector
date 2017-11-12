@@ -3,23 +3,23 @@ package domaincomau_test
 import (
 	. "github.com/DennisDenuto/property-price-collector/site/domaincomau"
 
+	"crypto/tls"
+	"fmt"
+	"github.com/DennisDenuto/property-price-collector/data"
+	"github.com/DennisDenuto/property-price-collector/data/training/trainingfakes"
+	"github.com/DennisDenuto/property-price-collector/site"
+	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom/propertypricehistorycomfakes"
+	"github.com/PuerkitoBio/fetchbot"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
-	"github.com/DennisDenuto/property-price-collector/site/propertypricehistorycom/propertypricehistorycomfakes"
-	"github.com/DennisDenuto/property-price-collector/site"
-	"github.com/PuerkitoBio/fetchbot"
-	"net/url"
-	"fmt"
-	"time"
-	"github.com/DennisDenuto/property-price-collector/data"
-	"github.com/DennisDenuto/property-price-collector/data/training/trainingfakes"
 	"net/http"
-	"crypto/tls"
+	"net/url"
+	"time"
 )
 
 var _ = Describe("DomaincomauScraper", func() {
-	var scraper DomainComAu
+	var scraper DomainComAuFetcher
 	var testMux *fetchbot.Mux
 	var fetcher *fetchbot.Fetcher
 	var server *ghttp.Server
@@ -113,9 +113,10 @@ Disallow: /deny`,
 				Expect(queueCount).To(Equal(1))
 			}
 
-			var properties *DomainComAuPropertyWrapper
+			var properties *data.DomainComAuPropertyWrapper
 			Eventually(scraper.GetProperties(), 2).Should(Receive(&properties))
 			Expect(properties.Property.Address).To(Equal("7 Bilpin Street, Greystanes NSW 2145"))
+			Expect(properties.PropertyObject.StreetAddress).To(Equal("7 Bilpin Street"))
 			Expect(properties.Valuation.LowerPrice).To(Equal(800000))
 			Expect(properties.Valuation.UpperPrice).To(Equal(1055000))
 			Expect(properties.PropertyObject.History.Sales).To(HaveLen(2))

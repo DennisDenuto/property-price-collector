@@ -49,10 +49,44 @@ type PropertyHistoryData struct {
 	NumBeds     string
 	NumBaths    string
 	NumCars     string
-
-	domainComAuPropertyHistory DomainComAuPropertyHistory
 }
 
+type DomainComAuPropertyWrapper struct {
+	AdvertBannerObject     interface{} `json:"advertBannerObject"`
+	BuildingProfileURLSlug string      `json:"buildingProfileUrlSlug"`
+	EndpointHost           string      `json:"endpointHost"`
+	NoEstimateInfo         string      `json:"noEstimateInfo"`
+	PostcodeRegex          struct {
+	} `json:"postcodeRegex"`
+	Property struct {
+		Address string `json:"address"`
+		ID      string `json:"id"`
+	} `json:"property"`
+	PropertyObject          DomainComAuPropertyHistory `json:"propertyObject"`
+	ShowBuildingProfileLink bool                       `json:"showBuildingProfileLink"`
+	ShowStreetProfileLink   bool                       `json:"showStreetProfileLink"`
+	StickyHeaderEnabled     bool                       `json:"stickyHeaderEnabled"`
+	StreetProfileURLSlug    string                     `json:"streetProfileUrlSlug"`
+	TermsInput              string                     `json:"termsInput"`
+	TypeaheadHintCSS        string                     `json:"typeaheadHintCss"`
+	TypeaheadMenuCSS        string                     `json:"typeaheadMenuCss"`
+	TypeaheadSuggestCSS     string                     `json:"typeaheadSuggestCss"`
+	User                    struct {
+		IsAuthenticated bool   `json:"IsAuthenticated"`
+		FamilyName      string `json:"familyName"`
+		FullName        string `json:"fullName"`
+		GivenName       string `json:"givenName"`
+	} `json:"user"`
+	Valuation struct {
+		Date            string  `json:"date"`
+		LowerPrice      int     `json:"lowerPrice"`
+		MidPrice        int     `json:"midPrice"`
+		PriceConfidence string  `json:"priceConfidence"`
+		RentPerWeek     int     `json:"rentPerWeek"`
+		RentYield       float64 `json:"rentYield"`
+		UpperPrice      int     `json:"upperPrice"`
+	} `json:"valuation"`
+}
 
 type DomainComAuPropertyHistory struct {
 	Address           string `json:"address"`

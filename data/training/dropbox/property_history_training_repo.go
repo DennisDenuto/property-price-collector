@@ -5,12 +5,12 @@ import (
 	"github.com/DennisDenuto/property-price-collector/data"
 	dropboxclient "github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
+	"github.com/pkg/errors"
 	"io"
 	"path/filepath"
 	"strings"
-	"unicode"
-	"github.com/pkg/errors"
 	"sync"
+	"unicode"
 )
 
 type PropertyHistoryDataRepo struct {
@@ -109,7 +109,6 @@ func (p PropertyHistoryDataRepo) List(state, suburb string) (<-chan *data.Proper
 }
 
 func (p PropertyHistoryDataRepo) Add(data data.PropertyHistoryData) error {
-
 	pr, pw := io.Pipe()
 	go func() {
 		defer pw.Close()
