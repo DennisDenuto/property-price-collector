@@ -15,6 +15,8 @@ import (
 )
 
 func main() {
+	logrus.SetLevel(logrus.DebugLevel)
+
 	c, err := maps.NewClient(maps.WithAPIKey(os.Getenv("PLACES_KEY")))
 	if err != nil {
 		logrus.Errorf("new client fatal error: %s", err)
@@ -23,6 +25,7 @@ func main() {
 	}
 
 	err = http.ListenAndServe(":8080", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
 		println(r.URL.RawQuery)
 		propertyUrl := r.URL.Path[1:]
 		resp, err := http.DefaultClient.Get(propertyUrl)
@@ -43,9 +46,18 @@ func main() {
 			}
 
 			property := wrapper.Page.PageInfo.Property
-			w.Write([]byte(fmt.Sprintf(`Address,	Suburb,	Land Size,	Price,	Train Stations, Num Beds, Num Baths, Num Garage, url
-"%v", "%v", "%v", "%v", "%v", "%v", "%v", "%v", "%v"`,
-				property.Address, property.Suburb, property.Landsize, property.Price, stations, property.Bedrooms, property.Bathrooms, property.Parking, propertyUrl)))
+			var medianRentPrice int
+			rentAddress := fmt.Sprintf("%s-%s-%s", property.Suburb, property.State, property.Postcode)
+			rentUrl := fmt.Sprintf("https://www.domain.com.au/rent/%s/?bedrooms=%s&ssubs=1&sort=price-asc", strings.Replace(rentAddress, " ", "-", -1), property.Bedrooms)
+			resp, err := http.DefaultClient.Get(rentUrl)
+			logrus.Debug("rent url used" + rentUrl)
+			domaincomau.GetDomainComAuPropertyListRentWrapper(resp, err, func(wrapper *data.DomainComAuPropertyListRentWrapper) {
+				medianRentPrice = wrapper.Page.PageInfo.Search.MedianPrice
+			})
+
+			w.Write([]byte(fmt.Sprintf(`Address,	Suburb,	Land Size,	Buy Price,	Median Rent, Train Stations, Num Beds, Num Baths, Num Garage, url
+"%v", "%v", "%v", "%v", "%d", "%v", "%v", "%v", "%v", "%v"`,
+				property.Address, property.Suburb, property.Landsize, property.Price, medianRentPrice, stations, property.Bedrooms, property.Bathrooms, property.Parking, propertyUrl)))
 		})
 
 		if err != nil {

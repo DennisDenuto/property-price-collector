@@ -126,6 +126,44 @@ func GetDomainComAuPropertyListWrapper(response *http.Response, err error, handl
 	})
 }
 
+
+
+func GetDomainComAuPropertyListRentWrapper(response *http.Response, err error, handler func(wrapper *data.DomainComAuPropertyListRentWrapper)) {
+	doc, err := goquery.NewDocumentFromResponse(response)
+	if err != nil {
+		logrus.WithError(err).Errorf("unable to get document. Skipping")
+		return
+	}
+
+	vm := otto.New()
+	doc.Find("script").Each(func(index int, selection *goquery.Selection) {
+		if strings.Contains(selection.Text(), "var digitalData") && strings.Contains(selection.Text(), "medianPrice") {
+			_, err := vm.Run(selection.Text())
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to run javascript json: %s", selection.Text())
+				return
+			}
+
+			domainComAuJsonWrapper, err := vm.Run(`JSON.stringify(digitalData)`)
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", selection.Text())
+				return
+			}
+
+			propertyString := domainComAuJsonWrapper.String()
+			domainComAuWrapper := &data.DomainComAuPropertyListRentWrapper{}
+			err = json.Unmarshal([]byte(propertyString), domainComAuWrapper)
+
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", propertyString)
+				return
+			}
+
+			handler(domainComAuWrapper)
+		}
+	})
+}
+
 func GetDomainComAuPropertyDetailWrapper(response *http.Response, err error, handler func(wrapper *data.DomainComAuPropertyDetailWrapper)) {
 	doc, err := goquery.NewDocumentFromResponse(response)
 	if err != nil {

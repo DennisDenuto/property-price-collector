@@ -88,6 +88,79 @@ type DomainComAuPropertyListWrapper struct {
 	} `json:"valuation"`
 }
 
+type DomainComAuPropertyListRentWrapper struct {
+	Page struct {
+		PageInfo struct {
+			PageID   string `json:"pageId"`
+			PageName string `json:"pageName"`
+			Search   struct {
+				AgencyIds             string `json:"agencyIds"`
+				BathroomsFrom         string `json:"bathroomsFrom"`
+				BathroomsTo           string `json:"bathroomsTo"`
+				BedroomsFrom          string `json:"bedroomsFrom"`
+				BedroomsTo            string `json:"bedroomsTo"`
+				CarSpaces             string `json:"carSpaces"`
+				GeoType               string `json:"geoType"`
+				MapSearch             bool   `json:"mapSearch"`
+				MedianPrice           int    `json:"medianPrice"`
+				Postcode              string `json:"postcode"`
+				PrimaryPropertyType   string `json:"primaryPropertyType"`
+				SecondaryPropertyType string `json:"secondaryPropertyType"`
+				ResultsPages          int    `json:"resultsPages"`
+				ResultsRecords        string `json:"resultsRecords"`
+				SearchArea            string `json:"searchArea"`
+				SearchDepth           int    `json:"searchDepth"`
+				SearchLocationCat     string `json:"searchLocationCat"`
+				SearchRegion          string `json:"searchRegion"`
+				SearchResultCount     int    `json:"searchResultCount"`
+				SearchSuburb          string `json:"searchSuburb"`
+				SearchTerm            string `json:"searchTerm"`
+				SearchTypeView        string `json:"searchTypeView"`
+				SortBy                string `json:"sortBy"`
+				State                 string `json:"state"`
+				SuburbID              string `json:"suburbId"`
+				SurroundingSuburbs    string `json:"surroundingSuburbs"`
+			} `json:"search"`
+			Brand         string `json:"brand"`
+			Generator     string `json:"generator"`
+			SysEnv        string `json:"sysEnv"`
+			IsEmbeddedApp bool   `json:"isEmbeddedApp"`
+		} `json:"pageInfo"`
+		Category struct {
+			PrimaryCategory string `json:"primaryCategory"`
+			SubCategory1    string `json:"subCategory1"`
+			PageType        string `json:"pageType"`
+		} `json:"category"`
+		AbTest5 string `json:"abTest5"`
+	} `json:"page"`
+	Titan struct {
+		AdZone      string `json:"adZone"`
+		AdKeyValues struct {
+			Cat         string   `json:"cat"`
+			Cat1        string   `json:"cat1"`
+			Ctype       string   `json:"ctype"`
+			E           string   `json:"e"`
+			Locstate    string   `json:"locstate"`
+			Locarea     string   `json:"locarea"`
+			Locsuburb   []string `json:"locsuburb"`
+			Locpostcode []string `json:"locpostcode"`
+			Usertype    string   `json:"usertype"`
+			MedianPrice int      `json:"medianPrice"`
+			Bedexact    []string `json:"bedexact"`
+		} `json:"adKeyValues"`
+		AdSite  string        `json:"adSite"`
+		AdSlots []interface{} `json:"adSlots"`
+	} `json:"titan"`
+	User struct {
+		MembershipType  string `json:"membershipType"`
+		SessionToken    string `json:"sessionToken"`
+		MembershipState string `json:"membershipState"`
+		IPAddress       string `json:"ipAddress"`
+	} `json:"user"`
+	Version string        `json:"version"`
+	Events  []interface{} `json:"events"`
+}
+
 type DomainComAuPropertyDetailWrapper struct {
 	Page struct {
 		PageInfo struct {
