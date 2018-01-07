@@ -25,7 +25,7 @@ var _ = Describe("DomaincomuaHistoryTrainingRepo", func() {
 
 	Describe("Add", func() {
 		It("should add to dropbox", func() {
-			propertyHistoryData := data.DomainComAuPropertyWrapper{
+			propertyHistoryData := data.DomainComAuPropertyListWrapper{
 				PropertyObject: data.DomainComAuPropertyHistory{
 					Suburb:        "North Sydney",
 					State:         "NSW",
@@ -52,7 +52,7 @@ var _ = Describe("DomaincomuaHistoryTrainingRepo", func() {
 
 		Context("when dropbox fails to upload", func() {
 			It("should return an error", func() {
-				propertyHistoryData := &data.DomainComAuPropertyWrapper{
+				propertyHistoryData := &data.DomainComAuPropertyListWrapper{
 					PropertyObject: data.DomainComAuPropertyHistory{
 						Suburb:        "North Sydney",
 						State:         "NSW",

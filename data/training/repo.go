@@ -12,7 +12,7 @@ type PropertyHistoryRepo interface {
 
 //go:generate counterfeiter . DomainComAuHistoryRepo
 type DomainComAuHistoryRepo interface {
-	Add(history *data.DomainComAuPropertyWrapper) error
+	Add(history *data.DomainComAuPropertyListWrapper) error
 }
 
 //go:generate counterfeiter . TxnRepo

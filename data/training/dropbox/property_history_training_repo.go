@@ -72,6 +72,8 @@ func (p PropertyHistoryDataRepo) List(state, suburb string) (<-chan *data.Proper
 		close(propertyHistoryChan)
 	}()
 
+	dropboxRateLimiter := sync.Mutex{}
+
 	for {
 		select {
 		case entry, ok := <-entries:
@@ -86,6 +88,9 @@ func (p PropertyHistoryDataRepo) List(state, suburb string) (<-chan *data.Proper
 
 			wg.Add(1)
 			go func(fileMetadata *files.FileMetadata) {
+				defer dropboxRateLimiter.Unlock()
+				dropboxRateLimiter.Lock()
+
 				defer wg.Done()
 
 				_, dropboxDownloadedFile, err := p.dropboxClient.Download(files.NewDownloadArg(filepath.Join(fileMetadata.PathLower, fileMetadata.Name)))

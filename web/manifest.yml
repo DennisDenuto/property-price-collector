@@ -1,0 +1,8 @@
+---
+applications:
+  - name: propertysheetshelper
+    memory: 1024M
+    disk_quota: 1024M
+    buildpack: go_buildpack
+    env:
+      GOPACKAGENAME: github.com/DennisDenuto/property-price-collector/web

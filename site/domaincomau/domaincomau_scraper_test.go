@@ -113,7 +113,7 @@ Disallow: /deny`,
 				Expect(queueCount).To(Equal(1))
 			}
 
-			var properties *data.DomainComAuPropertyWrapper
+			var properties *data.DomainComAuPropertyListWrapper
 			Eventually(scraper.GetProperties(), 2).Should(Receive(&properties))
 			Expect(properties.Property.Address).To(Equal("7 Bilpin Street, Greystanes NSW 2145"))
 			Expect(properties.PropertyObject.StreetAddress).To(Equal("7 Bilpin Street"))

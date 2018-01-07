@@ -51,7 +51,7 @@ type PropertyHistoryData struct {
 	NumCars     string
 }
 
-type DomainComAuPropertyWrapper struct {
+type DomainComAuPropertyListWrapper struct {
 	AdvertBannerObject     interface{} `json:"advertBannerObject"`
 	BuildingProfileURLSlug string      `json:"buildingProfileUrlSlug"`
 	EndpointHost           string      `json:"endpointHost"`
@@ -86,6 +86,77 @@ type DomainComAuPropertyWrapper struct {
 		RentYield       float64 `json:"rentYield"`
 		UpperPrice      int     `json:"upperPrice"`
 	} `json:"valuation"`
+}
+
+type DomainComAuPropertyDetailWrapper struct {
+	Page struct {
+		PageInfo struct {
+			Author    string `json:"author"`
+			Brand     string `json:"brand"`
+			Generator string `json:"generator"`
+			PageID    string `json:"pageId"`
+			PageName  string `json:"pageName"`
+			SysEnv    string `json:"sysEnv"`
+			Property  struct {
+				Address               string `json:"address"`
+				Agency                string `json:"agency"`
+				AgentNames            string `json:"agentNames"`
+				AdType                string `json:"adType"`
+				Bedrooms              string `json:"bedrooms"`
+				Bathrooms             string `json:"bathrooms"`
+				FloorPlansCount       string `json:"floorPlansCount"`
+				Landsize              string `json:"landsize"`
+				Buildingsize          string `json:"buildingsize"`
+				Parking               string `json:"parking"`
+				PhotoCount            string `json:"photoCount"`
+				Postcode              string `json:"postcode"`
+				Price                 string `json:"price"`
+				PrimaryPropertyType   string `json:"primaryPropertyType"`
+				SecondaryPropertyType string `json:"secondaryPropertyType"`
+				State                 string `json:"state"`
+				Suburb                string `json:"suburb"`
+				VideoCount            string `json:"videoCount"`
+				PropertyID            string `json:"propertyId"`
+				AgencyID              string `json:"agencyId"`
+			} `json:"property"`
+			SuburbID string `json:"suburbId"`
+		} `json:"pageInfo"`
+		Category struct {
+			PrimaryCategory string `json:"primaryCategory"`
+			SubCategory1    string `json:"subCategory1"`
+			PageType        string `json:"pageType"`
+		} `json:"category"`
+	} `json:"page"`
+	Titan struct {
+		AdSite      string `json:"adSite"`
+		AdZone      string `json:"adZone"`
+		AdKeyValues struct {
+			Cat         string   `json:"cat"`
+			Cat1        string   `json:"cat1"`
+			Ctype       string   `json:"ctype"`
+			Locstate    string   `json:"locstate"`
+			Locarea     string   `json:"locarea"`
+			Locsuburb   []string `json:"locsuburb"`
+			Locpostcode []string `json:"locpostcode"`
+			Usertype    string   `json:"usertype"`
+			MedianPrice string   `json:"medianPrice"`
+			E           string   `json:"e"`
+			Proptypes   []string `json:"proptypes"`
+		} `json:"adKeyValues"`
+		AdSlots      []string `json:"adSlots"`
+		ContentWidth string   `json:"contentWidth"`
+	} `json:"titan"`
+	User struct {
+		Profile struct {
+			ProfileInfo struct {
+			} `json:"profileInfo"`
+		} `json:"profile"`
+		MembershipType  string `json:"membershipType"`
+		MembershipState string `json:"membershipState"`
+		IPAddress       string `json:"ipAddress"`
+	} `json:"user"`
+	Version string        `json:"version"`
+	Events  []interface{} `json:"events"`
 }
 
 type DomainComAuPropertyHistory struct {

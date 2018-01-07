@@ -1,4 +1,4 @@
-memo = "1af4c4457f2fcd8bf809298cb226be1fd8db8dd06ced06895e8b94d04df55e45"
+memo = "3a7b67a0e0e3b5b114c0a49fb3c82fbeb4252baf91684ba89fbcb7f295dc9c56"
 
 [[projects]]
   name = "github.com/PuerkitoBio/fetchbot"
@@ -131,6 +131,12 @@ memo = "1af4c4457f2fcd8bf809298cb226be1fd8db8dd06ced06895e8b94d04df55e45"
   packages = [".","codes","credentials","grpclb/grpc_lb_v1","grpclog","internal","keepalive","metadata","naming","peer","stats","status","tap","transport"]
   revision = "42c095b6c9bdd80d4435b064508c398afdb0ec99"
   version = "v1.4.1"
+
+[[projects]]
+  branch = "master"
+  name = "googlemaps.github.io/maps"
+  packages = [".","internal"]
+  revision = "7bc07438db8f569e75a2d2ca1be64fde336962f5"
 
 [[projects]]
   name = "gopkg.in/sourcemap.v1"

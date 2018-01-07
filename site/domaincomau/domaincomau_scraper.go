@@ -19,7 +19,7 @@ import (
 
 type DomainComAuFetcher struct {
 	propertyHistoryDataRepo    *dropbox.PropertyHistoryDataRepo
-	DomainComAuPropertyChannel chan *data.DomainComAuPropertyWrapper
+	DomainComAuPropertyChannel chan *data.DomainComAuPropertyListWrapper
 	Seeds                      <-chan string
 }
 
@@ -48,8 +48,8 @@ func NewDomainComAu(host string,
 	}()
 
 	return DomainComAuFetcher{
-		DomainComAuPropertyChannel: make(chan *data.DomainComAuPropertyWrapper, 100),
-		Seeds: seeds,
+		DomainComAuPropertyChannel: make(chan *data.DomainComAuPropertyListWrapper, 100),
+		Seeds:                      seeds,
 	}
 }
 
@@ -79,45 +79,86 @@ func (d DomainComAuFetcher) SetupMux(mux *fetchbot.Mux) {
 	mux.Response().Path("/property-profile").Handler(historicalPropertyList(d.DomainComAuPropertyChannel))
 }
 
-func historicalPropertyList(historyData chan *data.DomainComAuPropertyWrapper) fetchbot.Handler {
+func historicalPropertyList(historyData chan *data.DomainComAuPropertyListWrapper) fetchbot.Handler {
 	return fetchbot.HandlerFunc(func(ctx *fetchbot.Context, response *http.Response, err error) {
 		logrus.Debugf("processing host %s", response.Request.URL.String())
 
-		doc, err := goquery.NewDocumentFromResponse(response)
-		if err != nil {
-			logrus.WithError(err).Errorf("unable to get document. Skipping")
-			return
-		}
+		GetDomainComAuPropertyListWrapper(response, err, func(wrapper *data.DomainComAuPropertyListWrapper) {
+			historyData <- wrapper
+		})
+	})
+}
 
-		vm := otto.New()
-		doc.Find("script").Each(func(index int, selection *goquery.Selection) {
-			if strings.Contains(selection.Text(), "viewModel.extend") && strings.Contains(selection.Text(), "address") {
-				vm.Run(`
+func GetDomainComAuPropertyListWrapper(response *http.Response, err error, handler func(wrapper *data.DomainComAuPropertyListWrapper)) {
+	doc, err := goquery.NewDocumentFromResponse(response)
+	if err != nil {
+		logrus.WithError(err).Errorf("unable to get document. Skipping")
+		return
+	}
+
+	vm := otto.New()
+	doc.Find("script").Each(func(index int, selection *goquery.Selection) {
+		if strings.Contains(selection.Text(), "viewModel.extend") && strings.Contains(selection.Text(), "address") {
+			vm.Run(`
 				function $(obj){return obj}
 				function ViewModel(){}
 				ViewModel.prototype.extend = function(json){ return JSON.stringify(json) }
 				var viewModel = new ViewModel()
 				`)
 
-				domainComAuJsonWrapper, err := vm.Run(selection.Text())
-				if err != nil {
-					logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", selection.Text())
-					return
-				}
-
-				propertyString := domainComAuJsonWrapper.String()
-				domainComAuWrapper := &data.DomainComAuPropertyWrapper{}
-				err = json.Unmarshal([]byte(propertyString), domainComAuWrapper)
-
-				if err != nil {
-					logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", propertyString)
-					return
-				}
-
-				historyData <- domainComAuWrapper
+			domainComAuJsonWrapper, err := vm.Run(selection.Text())
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", selection.Text())
+				return
 			}
-		})
 
+			propertyString := domainComAuJsonWrapper.String()
+			domainComAuWrapper := &data.DomainComAuPropertyListWrapper{}
+			err = json.Unmarshal([]byte(propertyString), domainComAuWrapper)
+
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", propertyString)
+				return
+			}
+
+			handler(domainComAuWrapper)
+		}
+	})
+}
+
+func GetDomainComAuPropertyDetailWrapper(response *http.Response, err error, handler func(wrapper *data.DomainComAuPropertyDetailWrapper)) {
+	doc, err := goquery.NewDocumentFromResponse(response)
+	if err != nil {
+		logrus.WithError(err).Errorf("unable to get document. Skipping")
+		return
+	}
+
+	vm := otto.New()
+	doc.Find("script").Each(func(index int, selection *goquery.Selection) {
+		if strings.Contains(selection.Text(), "var digitalData") && strings.Contains(selection.Text(), "address") {
+			_, err := vm.Run(selection.Text())
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to run javascript json: %s", selection.Text())
+				return
+			}
+
+			domainComAuJsonWrapper, err := vm.Run(`JSON.stringify(digitalData)`)
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", selection.Text())
+				return
+			}
+
+			propertyString := domainComAuJsonWrapper.String()
+			domainComAuWrapper := &data.DomainComAuPropertyDetailWrapper{}
+			err = json.Unmarshal([]byte(propertyString), domainComAuWrapper)
+
+			if err != nil {
+				logrus.WithField("url", response.Request.URL.String()).WithError(err).Errorf("Unable to unmarshal json: %s", propertyString)
+				return
+			}
+
+			handler(domainComAuWrapper)
+		}
 	})
 }
 
@@ -127,14 +168,14 @@ func getListUri(host string, streetAddress string, state string, postcode string
 
 func sanitizeAddress(address string) string {
 	return strings.Map(func(r rune) rune {
-		if unicode.IsSpace(r) {
+		if unicode.IsSpace(r) || r == '/' {
 			return '-'
 		}
 		return unicode.ToLower(r)
 	}, address)
 }
 
-func (d DomainComAuFetcher) GetProperties() <-chan *data.DomainComAuPropertyWrapper {
+func (d DomainComAuFetcher) GetProperties() <-chan *data.DomainComAuPropertyListWrapper {
 	return d.DomainComAuPropertyChannel
 }
 

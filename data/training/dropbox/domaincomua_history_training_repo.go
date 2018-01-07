@@ -24,7 +24,7 @@ func NewDomainComAuHistoryDataRepo(token string) *DomainComAuHistoryDataRepo {
 	}
 }
 
-func (repo DomainComAuHistoryDataRepo) Add(history *data.DomainComAuPropertyWrapper) error {
+func (repo DomainComAuHistoryDataRepo) Add(history *data.DomainComAuPropertyListWrapper) error {
 	pr, pw := io.Pipe()
 	go func() {
 		defer pw.Close()
